@@ -150,7 +150,6 @@
 149,Mercado 24 de agosto,mercado,Roma-Condesa,19.3901587,-99.1575872,animado|turistico|familiar,60,120,1,2,1,1,1,,08:00,18:00,,Mo-Su 07:00-19:00,
 150,Tianguis domingos,mercado,Roma-Condesa,19.3936627,-99.1772042,animado|turistico|familiar,60,120,1,2,1,1,1,,08:00,18:00,,Su,
 151,Tianguis jueves,mercado,Roma-Condesa,19.389851,-99.1765461,animado|turistico|familiar,60,120,1,2,1,1,1,,08:00,18:00,,Th,
-152,Forum Buenavista,mirador,Centro Historico,19.4480388,-99.1519785,romantico|tranquilo,40,0,1,1,1,1,0,,09:00,21:00,,,
 153,Mirador 360°,mirador,Centro Historico,19.436166,-99.1545538,romantico|tranquilo,40,0,1,1,1,1,0,,09:00,21:00,,,
 154,Vida Natural,mirador,Centro Historico,19.4151008,-99.0837141,romantico|tranquilo,40,0,1,1,1,1,0,,09:00,21:00,,,
 155,Mirador El OVNI,mirador,Polanco-Chapultepec,19.4009555,-99.2199601,romantico|tranquilo,40,0,1,1,1,1,0,,09:00,21:00,,,
@@ -221,7 +220,6 @@
 220,Parque Lele,parque,Roma-Condesa,19.4233524,-99.1645701,naturaleza|tranquilo|familiar,60,0,1,2,1,1,0,,06:00,18:00,,24/7,
 221,Parque México,parque,Roma-Condesa,19.4123553,-99.1693925,naturaleza|tranquilo|familiar,60,0,1,2,1,1,0,,06:00,18:00,,24/7,
 222,Parque de la Juventud,parque,Roma-Condesa,19.3910875,-99.1977293,naturaleza|tranquilo|familiar,60,0,1,2,1,1,0,,06:00,18:00,,Mo-Su 08:00-18:00,
-223,Vips,parque,Roma-Condesa,19.3972318,-99.1378425,naturaleza|tranquilo|familiar,60,0,1,2,1,1,0,mexican;regional;burger,06:00,18:00,,,https://vips.com.mx/
 224,"Jardín ""El Edén""",parque,San Angel,19.3337661,-99.1889725,naturaleza|tranquilo|familiar,60,0,1,2,1,1,0,,06:00,18:00,,24/7,
 225,Ahumadas Grill & BBQ,restaurante,Centro Historico,19.4316649,-99.1540409,animado|familiar,75,250,3,1,1,1,1,steak_house,09:00,23:00,,Mo-Su 13:00-22:00,https://www.ahumadasgrillbbq.com/
 226,Centro Castellano,restaurante,Centro Historico,19.4311188,-99.1399888,animado|familiar,75,250,3,1,1,1,1,spanish,09:00,23:00,,Mo-Su 13:00-23:00,https://grupocastellano.com.mx/
@@ -299,5 +297,4 @@
 298,Aviario,zoologico,Polanco-Chapultepec,19.429523,-99.1957414,familiar|naturaleza,180,50,1,3,1,0,0,,09:00,17:00,lunes,,
 299,Herpetario,zoologico,Polanco-Chapultepec,19.4246477,-99.188364,familiar|naturaleza,180,50,1,3,1,0,0,,09:00,17:00,lunes,,
 300,Sólo Entrada / Only Entrance,zoologico,Polanco-Chapultepec,19.4229107,-99.1874125,familiar|naturaleza,180,50,1,3,1,0,0,,09:00,17:00,lunes,Mo-Su 09:00-17:00,
-301,Sólo Salida / Only Exit,zoologico,Polanco-Chapultepec,19.421348,-99.1890228,familiar|naturaleza,180,50,1,3,1,0,0,,09:00,17:00,lunes,,
 302,Zoológico de Chapultepec,zoologico,Polanco-Chapultepec,19.4233015,-99.1895501,familiar|naturaleza,180,50,1,3,1,0,0,,09:00,17:00,lunes,Tu-Su 09:00-16:30,
