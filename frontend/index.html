@@ -20,16 +20,22 @@
   .grupo { padding: 10px; border: 2px solid #ddd; background: #fafafa; border-radius: 8px; cursor: pointer; font-size: 14px; }
   .grupo.activo { border-color: #7a1f3d; background: #f6e6ec; font-weight: 600; }
   label { display: block; font-size: 14px; margin: 6px 0; }
-  input[type=number], select { width: 100%; padding: 7px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+  input[type=number], input[type=time], select { width: 100%; padding: 7px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .intereses { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8px; }
   .intereses label { margin: 3px 0; }
   button#buscar { width: 100%; margin-top: 16px; padding: 12px; background: #7a1f3d; color: #fff; border: 0; border-radius: 8px; font-size: 16px; cursor: pointer; }
   button#buscar:hover { background: #5e1730; }
-  #mapa { height: 420px; border-radius: 10px; }
-  #estado { margin: 10px 0; font-size: 14px; color: #555; }
+  #mapa { height: 430px; border-radius: 10px; }
+  #estado { margin: 10px 0 0; font-size: 14px; color: #555; }
+  .resumen { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .dato { background: #f6e6ec; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+  .dato b { display: block; font-size: 16px; color: #7a1f3d; }
   ol#lista { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
-  ol#lista li { display: flex; gap: 10px; background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  ol#lista li { display: flex; gap: 12px; background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.1); cursor: pointer; }
+  ol#lista li:hover { background: #fbf6f8; }
   .num { background: #7a1f3d; color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex: none; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+  .hora { width: 92px; flex: none; font-weight: 600; font-size: 14px; color: #7a1f3d; }
   .info b { font-size: 15px; }
   .info small { display: block; color: #666; margin-top: 2px; }
 </style>
@@ -37,7 +43,7 @@
 <body>
 <header>
   <h1>Planificador de itinerarios CDMX</h1>
-  <p>Dinos quiénes van y qué les gusta, y te recomendamos lugares.</p>
+  <p>Dinos quiénes van y qué les gusta, y te armamos el día.</p>
 </header>
 
 <main>
@@ -55,6 +61,12 @@
     </label>
     <label><input type="checkbox" id="ninos"> Hay niños</label>
     <label><input type="checkbox" id="mayores"> Hay adultos mayores</label>
+
+    <h2>Horario del día</h2>
+    <div class="dos">
+      <label>Inicio <input type="time" id="inicio" value="10:00"></label>
+      <label>Fin <input type="time" id="fin" value="20:00"></label>
+    </div>
 
     <h2>Presupuesto por persona (MXN)</h2>
     <input type="number" id="presupuesto" value="800" min="50" step="50">
@@ -95,13 +107,14 @@
       <label><input type="checkbox" value="fotografia" checked> Fotografía</label>
     </div>
 
-    <button id="buscar" type="button">Recomendar lugares</button>
+    <button id="buscar" type="button">Generar itinerario</button>
   </section>
 
   <section>
     <div class="caja">
       <div id="mapa"></div>
-      <div id="estado">Llena el formulario y presiona "Recomendar lugares".</div>
+      <div id="estado">Llena el formulario y presiona "Generar itinerario".</div>
+      <div class="resumen" id="resumen"></div>
     </div>
     <ol id="lista"></ol>
   </section>
@@ -114,7 +127,7 @@
 
   const mapa = L.map("mapa").setView([19.4326, -99.1332], 12);
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 19, subdomains: "abcd", attribution: "&copy; OpenStreetMap &copy; Esri"
+    maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; Esri"
   }).addTo(mapa);
   const capa = L.layerGroup().addTo(mapa);
 
@@ -147,50 +160,89 @@
       nivel_actividad: parseInt(document.getElementById("actividad").value),
       zona: document.getElementById("zona").value,
       dia_semana: document.getElementById("dia").value,
-      intereses: intereses,
-      n: 10
+      hora_inicio: document.getElementById("inicio").value || "10:00",
+      hora_fin: document.getElementById("fin").value || "20:00",
+      intereses: intereses
     };
+  }
+
+  function dato(titulo, valor) {
+    return '<div class="dato"><b>' + esc(valor) + '</b>' + esc(titulo) + '</div>';
+  }
+
+  function mostrar(datos) {
+    const estado = document.getElementById("estado");
+    const lista = document.getElementById("lista");
+    const paradas = datos.paradas;
+    const r = datos.resumen;
+
+    estado.textContent = "Tu día, de " + r.hora_inicio + " a " + r.hora_fin + ":";
+    document.getElementById("resumen").innerHTML =
+      dato("lugares", r.lugares) +
+      dato("gasto por persona", "$" + Math.round(r.gasto_por_persona)) +
+      dato("en traslados", r.traslado_total_min + " min") +
+      dato("incluye comida", r.incluye_comida ? "Sí" : "No");
+
+    const puntos = [];
+    paradas.forEach(function (p) {
+      const icono = L.divIcon({
+        html: '<div class="num">' + p.orden + '</div>',
+        className: "", iconSize: [26, 26], iconAnchor: [13, 13]
+      });
+      const marcador = L.marker([p.lat, p.lon], { icon: icono })
+        .addTo(capa)
+        .bindPopup("<b>" + esc(p.nombre) + "</b><br>" + esc(p.llegada) + " - " + esc(p.salida));
+      puntos.push([p.lat, p.lon]);
+
+      let extra = "";
+      if (p.traslado_min > 0) extra += "Traslado desde el anterior: ~" + p.traslado_min + " min";
+      if (p.espera_min > 0) extra += (extra ? " - " : "") + "espera " + p.espera_min + " min";
+
+      const li = document.createElement("li");
+      li.innerHTML =
+        '<div class="num">' + p.orden + '</div>' +
+        '<div class="hora">' + esc(p.llegada) + ' - ' + esc(p.salida) + '</div>' +
+        '<div class="info"><b>' + esc(p.nombre) + '</b>' +
+        '<small>' + esc(p.categoria) + ' - ' + esc(p.zona) + ' - $' + Math.round(p.costo_estimado) + ' por persona</small>' +
+        (extra ? '<small>' + esc(extra) + '</small>' : '') + '</div>';
+      li.addEventListener("click", function () {
+        mapa.setView([p.lat, p.lon], 15);
+        marcador.openPopup();
+      });
+      lista.appendChild(li);
+    });
+
+    if (puntos.length > 1) {
+      L.polyline(puntos, { color: "#7a1f3d", weight: 3, opacity: 0.8, dashArray: "6 8" }).addTo(capa);
+    }
+    mapa.fitBounds(puntos, { padding: [30, 30] });
   }
 
   async function buscar() {
     const estado = document.getElementById("estado");
-    const lista = document.getElementById("lista");
-    estado.textContent = "Buscando...";
-    lista.innerHTML = "";
+    document.getElementById("lista").innerHTML = "";
+    document.getElementById("resumen").innerHTML = "";
     capa.clearLayers();
+
+    const perfil = leerPerfil();
+    if (perfil.hora_fin <= perfil.hora_inicio) {
+      estado.textContent = "La hora de fin debe ser posterior a la de inicio.";
+      return;
+    }
+    estado.textContent = "Armando tu día...";
     try {
-      const resp = await fetch(API + "/recomendar", {
+      const resp = await fetch(API + "/itinerario", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leerPerfil())
+        body: JSON.stringify(perfil)
       });
       if (!resp.ok) throw new Error("Error " + resp.status);
       const datos = await resp.json();
-      if (datos.total === 0) {
-        estado.textContent = "No hay lugares con esos filtros. Prueba subir el presupuesto o cambiar la zona.";
+      if (!datos.paradas.length) {
+        estado.textContent = "No se pudo armar un día con esos filtros. Prueba subir el presupuesto, ampliar el horario o cambiar la zona.";
         return;
       }
-      estado.textContent = datos.total + " lugares recomendados:";
-      const puntos = [];
-      datos.lugares.forEach(function (l, i) {
-        const icono = L.divIcon({
-          html: '<div class="num">' + (i + 1) + '</div>',
-          className: "", iconSize: [26, 26], iconAnchor: [13, 13]
-        });
-        L.marker([l.lat, l.lon], { icon: icono })
-          .addTo(capa)
-          .bindPopup("<b>" + esc(l.nombre) + "</b><br>" + esc(l.categoria) + " - " + esc(l.zona));
-        puntos.push([l.lat, l.lon]);
-
-        const li = document.createElement("li");
-        li.innerHTML =
-          '<div class="num">' + (i + 1) + '</div>' +
-          '<div class="info"><b>' + esc(l.nombre) + '</b>' +
-          '<small>' + esc(l.categoria) + ' - ' + esc(l.zona) + '</small>' +
-          '<small>~' + esc(l.duracion_min) + ' min - $' + esc(l.costo_estimado) + ' por persona</small></div>';
-        lista.appendChild(li);
-      });
-      mapa.fitBounds(puntos, { padding: [30, 30] });
+      mostrar(datos);
     } catch (e) {
       estado.textContent = "No se pudo conectar con la API. ¿Está encendido uvicorn? (" + e.message + ")";
     }

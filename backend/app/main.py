@@ -42,3 +42,19 @@ def api_recomendar(p: PerfilEntrada):
                 "duracion_min", "costo_estimado", "puntaje"]
     top = top[columnas].round(3).fillna("")
     return {"total": len(top), "lugares": top.to_dict(orient="records")}
+
+
+from app.itinerario import generar_itinerario
+
+
+class PerfilItinerario(PerfilEntrada):
+    hora_inicio: str = "10:00"
+    hora_fin: str = "20:00"
+
+
+@app.post("/itinerario")
+def api_itinerario(p: PerfilItinerario):
+    datos = p.model_dump()
+    datos.pop("n")
+    perfil = Perfil(**datos)
+    return generar_itinerario(LUGARES, perfil)
