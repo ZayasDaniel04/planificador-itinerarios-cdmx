@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planificador de itinerarios CDMX</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #f4f1ec; color: #222; }
+  header { background: #7a1f3d; color: #fff; padding: 16px 24px; }
+  header h1 { margin: 0; font-size: 22px; }
+  header p { margin: 4px 0 0; opacity: .85; font-size: 14px; }
+  main { display: grid; grid-template-columns: 340px 1fr; gap: 16px; padding: 16px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  .caja { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  h2 { font-size: 15px; margin: 14px 0 6px; }
+  h2:first-child { margin-top: 0; }
+  .grupos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .grupo { padding: 10px; border: 2px solid #ddd; background: #fafafa; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .grupo.activo { border-color: #7a1f3d; background: #f6e6ec; font-weight: 600; }
+  label { display: block; font-size: 14px; margin: 6px 0; }
+  input[type=number], select { width: 100%; padding: 7px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+  .intereses { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8px; }
+  .intereses label { margin: 3px 0; }
+  button#buscar { width: 100%; margin-top: 16px; padding: 12px; background: #7a1f3d; color: #fff; border: 0; border-radius: 8px; font-size: 16px; cursor: pointer; }
+  button#buscar:hover { background: #5e1730; }
+  #mapa { height: 420px; border-radius: 10px; }
+  #estado { margin: 10px 0; font-size: 14px; color: #555; }
+  ol#lista { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+  ol#lista li { display: flex; gap: 10px; background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .num { background: #7a1f3d; color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex: none; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+  .info b { font-size: 15px; }
+  .info small { display: block; color: #666; margin-top: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Planificador de itinerarios CDMX</h1>
+  <p>Dinos quiénes van y qué les gusta, y te recomendamos lugares.</p>
+</header>
+
+<main>
+  <section class="caja" id="panel">
+    <h2>¿Quiénes van?</h2>
+    <div class="grupos">
+      <button type="button" class="grupo" data-grupo="solo">Solo/a</button>
+      <button type="button" class="grupo activo" data-grupo="pareja">Pareja</button>
+      <button type="button" class="grupo" data-grupo="amigos">Amigos</button>
+      <button type="button" class="grupo" data-grupo="familia">Familia</button>
+    </div>
+
+    <label>Número de personas
+      <input type="number" id="personas" value="2" min="1" max="20">
+    </label>
+    <label><input type="checkbox" id="ninos"> Hay niños</label>
+    <label><input type="checkbox" id="mayores"> Hay adultos mayores</label>
+
+    <h2>Presupuesto por persona (MXN)</h2>
+    <input type="number" id="presupuesto" value="800" min="50" step="50">
+
+    <h2>Nivel de caminata</h2>
+    <select id="actividad">
+      <option value="1">Poca</option>
+      <option value="2" selected>Normal</option>
+      <option value="3">Mucha</option>
+    </select>
+
+    <h2>Zona</h2>
+    <select id="zona">
+      <option value="">Cualquiera</option>
+      <option>Centro Historico</option>
+      <option>Roma-Condesa</option>
+      <option>Polanco-Chapultepec</option>
+      <option>Coyoacan</option>
+      <option>San Angel</option>
+    </select>
+
+    <h2>Día de la visita</h2>
+    <select id="dia">
+      <option>lunes</option><option>martes</option><option>miercoles</option>
+      <option>jueves</option><option>viernes</option>
+      <option selected>sabado</option><option>domingo</option>
+    </select>
+
+    <h2>¿Qué les gusta?</h2>
+    <div class="intereses">
+      <label><input type="checkbox" value="cultura"> Cultura</label>
+      <label><input type="checkbox" value="comida" checked> Comida</label>
+      <label><input type="checkbox" value="naturaleza"> Naturaleza</label>
+      <label><input type="checkbox" value="vida_nocturna"> Vida nocturna</label>
+      <label><input type="checkbox" value="compras"> Compras</label>
+      <label><input type="checkbox" value="arte" checked> Arte</label>
+      <label><input type="checkbox" value="historia"> Historia</label>
+      <label><input type="checkbox" value="fotografia" checked> Fotografía</label>
+    </div>
+
+    <button id="buscar" type="button">Recomendar lugares</button>
+  </section>
+
+  <section>
+    <div class="caja">
+      <div id="mapa"></div>
+      <div id="estado">Llena el formulario y presiona "Recomendar lugares".</div>
+    </div>
+    <ol id="lista"></ol>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const API = "http://127.0.0.1:8000";
+  let grupo = "pareja";
+
+  const mapa = L.map("mapa").setView([19.4326, -99.1332], 12);
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19, subdomains: "abcd", attribution: "&copy; OpenStreetMap &copy; Esri"
+  }).addTo(mapa);
+  const capa = L.layerGroup().addTo(mapa);
+
+  function esc(t) {
+    const d = document.createElement("div");
+    d.textContent = t == null ? "" : t;
+    return d.innerHTML;
+  }
+
+  document.querySelectorAll(".grupo").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".grupo").forEach(function (x) { x.classList.remove("activo"); });
+      b.classList.add("activo");
+      grupo = b.dataset.grupo;
+      if (grupo === "familia") document.getElementById("ninos").checked = true;
+    });
+  });
+
+  function leerPerfil() {
+    const intereses = {};
+    document.querySelectorAll(".intereses input:checked").forEach(function (c) {
+      intereses[c.value] = 0.9;
+    });
+    return {
+      tipo_grupo: grupo,
+      personas: parseInt(document.getElementById("personas").value) || 1,
+      hay_ninos: document.getElementById("ninos").checked,
+      hay_adultos_mayores: document.getElementById("mayores").checked,
+      presupuesto_por_persona: parseFloat(document.getElementById("presupuesto").value) || 500,
+      nivel_actividad: parseInt(document.getElementById("actividad").value),
+      zona: document.getElementById("zona").value,
+      dia_semana: document.getElementById("dia").value,
+      intereses: intereses,
+      n: 10
+    };
+  }
+
+  async function buscar() {
+    const estado = document.getElementById("estado");
+    const lista = document.getElementById("lista");
+    estado.textContent = "Buscando...";
+    lista.innerHTML = "";
+    capa.clearLayers();
+    try {
+      const resp = await fetch(API + "/recomendar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leerPerfil())
+      });
+      if (!resp.ok) throw new Error("Error " + resp.status);
+      const datos = await resp.json();
+      if (datos.total === 0) {
+        estado.textContent = "No hay lugares con esos filtros. Prueba subir el presupuesto o cambiar la zona.";
+        return;
+      }
+      estado.textContent = datos.total + " lugares recomendados:";
+      const puntos = [];
+      datos.lugares.forEach(function (l, i) {
+        const icono = L.divIcon({
+          html: '<div class="num">' + (i + 1) + '</div>',
+          className: "", iconSize: [26, 26], iconAnchor: [13, 13]
+        });
+        L.marker([l.lat, l.lon], { icon: icono })
+          .addTo(capa)
+          .bindPopup("<b>" + esc(l.nombre) + "</b><br>" + esc(l.categoria) + " - " + esc(l.zona));
+        puntos.push([l.lat, l.lon]);
+
+        const li = document.createElement("li");
+        li.innerHTML =
+          '<div class="num">' + (i + 1) + '</div>' +
+          '<div class="info"><b>' + esc(l.nombre) + '</b>' +
+          '<small>' + esc(l.categoria) + ' - ' + esc(l.zona) + '</small>' +
+          '<small>~' + esc(l.duracion_min) + ' min - $' + esc(l.costo_estimado) + ' por persona</small></div>';
+        lista.appendChild(li);
+      });
+      mapa.fitBounds(puntos, { padding: [30, 30] });
+    } catch (e) {
+      estado.textContent = "No se pudo conectar con la API. ¿Está encendido uvicorn? (" + e.message + ")";
+    }
+  }
+
+  document.getElementById("buscar").addEventListener("click", buscar);
+</script>
+</body>
+</html>
