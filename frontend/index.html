@@ -215,7 +215,8 @@
     if (puntos.length > 1) {
       L.polyline(puntos, { color: "#7a1f3d", weight: 3, opacity: 0.8, dashArray: "6 8" }).addTo(capa);
     }
-    mapa.fitBounds(puntos, { padding: [30, 30] });
+    mapa.invalidateSize();
+    mapa.fitBounds(puntos, { padding: [30, 30], maxZoom: 14 });
   }
 
   async function buscar() {
