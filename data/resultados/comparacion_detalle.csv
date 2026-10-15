@@ -1,0 +1,289 @@
+﻿perfil,algoritmo,semilla,con_solucion,valido,violaciones,fitness,lugares,gasto_por_persona,presupuesto_usado_pct,duracion_total_min,tiempo_en_lugares_min,traslado_total_min,espera_total_min,segundos
+Pareja romantica,greedy,,True,True,0,2.5430000000000006,6,350.0,43.8,371,290,34,47,0.001
+Pareja romantica,orden_por_puntaje,,True,True,0,1.838,6,350.0,43.8,464,290,97,77,0.0002
+Pareja romantica,aleatorio,0.0,True,True,0,1.4130000000000003,6,350.0,43.8,466,290,175,1,0.0002
+Pareja romantica,genetico_sin_semilla,0.0,True,True,0,3.462,8,650.0,81.2,501,455,46,0,0.4174
+Pareja romantica,genetico_con_semilla_greedy,0.0,True,True,0,3.5220000000000002,8,650.0,81.2,495,455,40,0,0.3949
+Pareja romantica,aleatorio,1.0,True,True,0,1.354,7,220.0,27.5,535,320,207,8,0.0002
+Pareja romantica,genetico_sin_semilla,1.0,True,True,0,3.492,8,650.0,81.2,498,455,43,0,0.412
+Pareja romantica,genetico_con_semilla_greedy,1.0,True,True,0,3.5420000000000003,8,650.0,81.2,493,455,38,0,0.4387
+Pareja romantica,aleatorio,2.0,True,True,0,1.122,6,220.0,27.5,487,275,148,64,0.0001
+Pareja romantica,genetico_sin_semilla,2.0,True,True,0,3.482,8,650.0,81.2,499,455,44,0,0.4315
+Pareja romantica,genetico_con_semilla_greedy,2.0,True,True,0,3.245,7,650.0,81.2,446,410,36,0,0.4272
+Pareja romantica,aleatorio,3.0,True,True,0,1.7780000000000005,6,350.0,43.8,450,290,88,72,0.0001
+Pareja romantica,genetico_sin_semilla,3.0,True,True,0,3.492,8,650.0,81.2,498,455,43,0,0.4165
+Pareja romantica,genetico_con_semilla_greedy,3.0,True,True,0,3.482,8,650.0,81.2,499,455,44,0,0.3977
+Pareja romantica,aleatorio,4.0,True,True,0,1.077,6,220.0,27.5,473,275,151,47,0.0001
+Pareja romantica,genetico_sin_semilla,4.0,True,True,0,3.472,8,650.0,81.2,500,455,45,0,0.4762
+Pareja romantica,genetico_con_semilla_greedy,4.0,True,True,0,3.462,8,650.0,81.2,501,455,46,0,0.4125
+Pareja romantica,aleatorio,5.0,True,True,0,1.352,6,220.0,27.5,422,275,147,0,0.0001
+Pareja romantica,genetico_sin_semilla,5.0,True,True,0,3.5420000000000003,8,650.0,81.2,493,455,38,0,0.4208
+Pareja romantica,genetico_con_semilla_greedy,5.0,True,True,0,3.5220000000000002,8,650.0,81.2,495,455,40,0,0.4199
+Pareja romantica,aleatorio,6.0,True,True,0,1.612,6,220.0,27.5,381,275,76,90,0.0001
+Pareja romantica,genetico_sin_semilla,6.0,True,True,0,3.482,8,650.0,81.2,499,455,44,0,0.4054
+Pareja romantica,genetico_con_semilla_greedy,6.0,True,True,0,3.5220000000000002,8,650.0,81.2,495,455,40,0,0.4498
+Pareja romantica,aleatorio,7.0,True,True,0,1.3820000000000001,6,220.0,27.5,439,275,94,70,0.0001
+Pareja romantica,genetico_sin_semilla,7.0,True,True,0,3.5420000000000003,8,650.0,81.2,493,455,38,0,0.392
+Pareja romantica,genetico_con_semilla_greedy,7.0,True,True,0,3.452,8,650.0,81.2,502,455,47,0,0.4362
+Pareja romantica,aleatorio,8.0,True,True,0,0.6829999999999997,6,350.0,43.8,583,290,189,104,0.0001
+Pareja romantica,genetico_sin_semilla,8.0,True,True,0,3.462,8,650.0,81.2,501,455,46,0,0.3972
+Pareja romantica,genetico_con_semilla_greedy,8.0,True,True,0,3.362,8,650.0,81.2,511,455,56,0,0.5117
+Pareja romantica,aleatorio,9.0,True,True,0,1.452,6,220.0,27.5,448,275,101,72,0.0001
+Pareja romantica,genetico_sin_semilla,9.0,True,True,0,3.5420000000000003,8,650.0,81.2,493,455,38,0,0.4146
+Pareja romantica,genetico_con_semilla_greedy,9.0,True,True,0,3.5420000000000003,8,650.0,81.2,493,455,38,0,0.513
+Familia con ninos,greedy,,True,True,0,2.894,6,350.0,70.0,529,465,64,0,0.0008
+Familia con ninos,orden_por_puntaje,,True,True,0,1.4369999999999998,4,100.0,20.0,531,465,66,0,0.0002
+Familia con ninos,aleatorio,0.0,True,True,0,0.4199999999999999,4,100.0,20.0,478,315,154,9,0.0001
+Familia con ninos,genetico_sin_semilla,0.0,True,True,0,3.384,7,350.0,70.0,459,420,39,0,0.4737
+Familia con ninos,genetico_con_semilla_greedy,0.0,True,True,0,3.331,7,220.0,44.0,455,405,50,0,0.4476
+Familia con ninos,aleatorio,1.0,True,True,0,1.463,4,50.0,10.0,515,465,50,0,0.0002
+Familia con ninos,genetico_sin_semilla,1.0,True,True,0,3.0820000000000003,6,220.0,44.0,529,495,34,0,0.5271
+Familia con ninos,genetico_con_semilla_greedy,1.0,True,True,0,3.302,7,220.0,44.0,491,450,41,0,0.5538
+Familia con ninos,aleatorio,2.0,True,True,0,0.6029999999999999,5,350.0,70.0,535,270,153,112,0.0001
+Familia con ninos,genetico_sin_semilla,2.0,True,True,0,3.276,7,220.0,44.0,458,405,53,0,0.4327
+Familia con ninos,genetico_con_semilla_greedy,2.0,True,True,0,3.241,6,220.0,44.0,480,450,30,0,0.4952
+Familia con ninos,aleatorio,3.0,True,True,0,1.693,6,100.0,20.0,453,345,108,0,0.0001
+Familia con ninos,genetico_sin_semilla,3.0,True,True,0,3.106,6,220.0,44.0,491,450,41,0,0.4126
+Familia con ninos,genetico_con_semilla_greedy,3.0,True,True,0,3.3609999999999998,7,220.0,44.0,452,405,47,0,0.4218
+Familia con ninos,aleatorio,4.0,True,True,0,1.713,6,350.0,70.0,497,360,125,12,0.0001
+Familia con ninos,genetico_sin_semilla,4.0,True,True,0,3.324,7,350.0,70.0,465,420,45,0,0.5822
+Familia con ninos,genetico_con_semilla_greedy,4.0,True,True,0,3.384,7,350.0,70.0,459,420,39,0,0.529
+Familia con ninos,aleatorio,5.0,True,True,0,2.06,6,350.0,70.0,517,375,111,31,0.0001
+Familia con ninos,genetico_sin_semilla,5.0,True,True,0,3.2560000000000002,7,220.0,44.0,460,405,55,0,0.4194
+Familia con ninos,genetico_con_semilla_greedy,5.0,True,True,0,3.33,7,350.0,70.0,505,465,40,0,0.4355
+Familia con ninos,aleatorio,6.0,True,True,0,1.2169999999999999,5,150.0,30.0,533,420,113,0,0.0001
+Familia con ninos,genetico_sin_semilla,6.0,True,True,0,3.324,7,350.0,70.0,465,420,45,0,0.4283
+Familia con ninos,genetico_con_semilla_greedy,6.0,True,True,0,3.344,7,350.0,70.0,463,420,43,0,0.4469
+Familia con ninos,aleatorio,7.0,True,True,0,1.472,5,150.0,30.0,510,420,90,0,0.0001
+Familia con ninos,genetico_sin_semilla,7.0,True,True,0,3.344,7,350.0,70.0,463,420,43,0,0.4816
+Familia con ninos,genetico_con_semilla_greedy,7.0,True,True,0,3.0440000000000005,6,350.0,70.0,514,465,49,0,0.5114
+Familia con ninos,aleatorio,8.0,True,True,0,2.716,6,220.0,44.0,515,450,65,0,0.0001
+Familia con ninos,genetico_sin_semilla,8.0,True,True,0,3.407,7,220.0,44.0,483,450,33,0,0.4512
+Familia con ninos,genetico_con_semilla_greedy,8.0,True,True,0,3.367,7,220.0,44.0,487,450,37,0,0.4726
+Familia con ninos,aleatorio,9.0,True,True,0,0.788,5,100.0,20.0,479,330,149,0,0.0001
+Familia con ninos,genetico_sin_semilla,9.0,True,True,0,3.2809999999999997,7,220.0,44.0,460,405,55,0,0.4564
+Familia con ninos,genetico_con_semilla_greedy,9.0,True,True,0,3.299,7,350.0,70.0,470,420,50,0,0.4685
+Amigos de fiesta,greedy,,True,True,0,2.604,6,950.0,79.2,461,420,41,30,0.0009
+Amigos de fiesta,orden_por_puntaje,,True,True,0,1.2399999999999998,5,700.0,58.3,393,345,48,90,0.0002
+Amigos de fiesta,aleatorio,0.0,True,True,0,2.134,7,820.0,68.3,599,495,104,30,0.0001
+Amigos de fiesta,genetico_sin_semilla,0.0,True,True,0,3.104,6,950.0,79.2,456,420,36,0,0.4125
+Amigos de fiesta,genetico_con_semilla_greedy,0.0,True,True,0,3.1539999999999995,7,950.0,79.2,551,510,41,0,0.3933
+Amigos de fiesta,aleatorio,1.0,True,True,0,2.069,6,950.0,79.2,604,420,70,114,0.0001
+Amigos de fiesta,genetico_sin_semilla,1.0,True,True,0,3.1589999999999994,8,950.0,79.2,653,600,53,0,0.4244
+Amigos de fiesta,genetico_con_semilla_greedy,1.0,True,True,0,3.1039999999999996,7,950.0,79.2,556,510,46,0,0.3955
+Amigos de fiesta,aleatorio,2.0,True,True,0,2.209,7,820.0,68.3,589,495,94,30,0.0001
+Amigos de fiesta,genetico_sin_semilla,2.0,True,True,0,3.114,6,950.0,79.2,455,420,35,0,0.3985
+Amigos de fiesta,genetico_con_semilla_greedy,2.0,True,True,0,3.1239999999999997,7,950.0,79.2,554,510,44,0,0.3971
+Amigos de fiesta,aleatorio,3.0,True,True,0,1.9940000000000002,6,950.0,79.2,544,420,110,44,0.0001
+Amigos de fiesta,genetico_sin_semilla,3.0,True,True,0,3.124,6,950.0,79.2,454,420,34,0,0.3857
+Amigos de fiesta,genetico_con_semilla_greedy,3.0,True,True,0,3.1439999999999997,7,950.0,79.2,552,510,42,0,0.4151
+Amigos de fiesta,aleatorio,4.0,True,True,0,1.7040000000000002,7,820.0,68.3,627,495,132,30,0.0001
+Amigos de fiesta,genetico_sin_semilla,4.0,True,True,0,3.1489999999999996,8,950.0,79.2,654,600,54,0,0.4655
+Amigos de fiesta,genetico_con_semilla_greedy,4.0,True,True,0,3.169,7,950.0,79.2,552,510,42,0,0.4419
+Amigos de fiesta,aleatorio,5.0,True,True,0,2.4139999999999997,7,820.0,68.3,586,495,91,0,0.0001
+Amigos de fiesta,genetico_sin_semilla,5.0,True,True,0,3.159,7,950.0,79.2,553,510,43,0,0.3893
+Amigos de fiesta,genetico_con_semilla_greedy,5.0,True,True,0,3.114,6,950.0,79.2,455,420,35,0,0.3732
+Amigos de fiesta,aleatorio,6.0,True,True,0,1.1599999999999997,6,700.0,58.3,546,435,111,0,0.0002
+Amigos de fiesta,genetico_sin_semilla,6.0,True,True,0,3.114,6,950.0,79.2,455,420,35,0,0.377
+Amigos de fiesta,genetico_con_semilla_greedy,6.0,True,True,0,3.1339999999999995,7,950.0,79.2,553,510,43,0,0.4386
+Amigos de fiesta,aleatorio,7.0,True,True,0,1.4160000000000004,6,650.0,54.2,566,465,101,30,0.0002
+Amigos de fiesta,genetico_sin_semilla,7.0,True,True,0,3.169,7,950.0,79.2,552,510,42,0,0.4184
+Amigos de fiesta,genetico_con_semilla_greedy,7.0,True,True,0,3.1239999999999997,7,950.0,79.2,554,510,44,0,0.4234
+Amigos de fiesta,aleatorio,8.0,True,True,0,1.944,6,950.0,79.2,527,420,107,60,0.0001
+Amigos de fiesta,genetico_sin_semilla,8.0,True,True,0,3.1339999999999995,7,950.0,79.2,553,510,43,0,0.4018
+Amigos de fiesta,genetico_con_semilla_greedy,8.0,True,True,0,3.034,8,950.0,79.2,663,600,63,0,0.481
+Amigos de fiesta,aleatorio,9.0,True,True,0,2.079,6,820.0,68.3,502,405,97,30,0.0001
+Amigos de fiesta,genetico_sin_semilla,9.0,True,True,0,3.169,7,950.0,79.2,552,510,42,0,0.3965
+Amigos de fiesta,genetico_con_semilla_greedy,9.0,True,True,0,3.1639999999999997,7,950.0,79.2,550,510,40,0,0.389
+Solo cultural,greedy,,True,True,0,3.2420000000000004,6,170.0,34.0,456,430,26,0,0.0007
+Solo cultural,orden_por_puntaje,,True,True,0,2.4410000000000003,5,90.0,18.0,446,385,61,0,0.0001
+Solo cultural,aleatorio,0.0,True,True,0,1.923,6,150.0,30.0,435,325,110,0,0.0002
+Solo cultural,genetico_sin_semilla,0.0,True,True,0,3.568,7,180.0,36.0,462,430,32,0,0.5609
+Solo cultural,genetico_con_semilla_greedy,0.0,True,True,0,3.578,7,180.0,36.0,461,430,31,0,0.4571
+Solo cultural,aleatorio,1.0,True,True,0,2.136,5,400.0,80.0,454,385,69,0,0.0001
+Solo cultural,genetico_sin_semilla,1.0,True,True,0,3.503,7,180.0,36.0,476,430,46,0,0.5008
+Solo cultural,genetico_con_semilla_greedy,1.0,True,True,0,3.588,7,180.0,36.0,460,430,30,0,0.4233
+Solo cultural,aleatorio,2.0,True,True,0,0.4650000000000002,4,100.0,20.0,402,225,65,172,0.0001
+Solo cultural,genetico_sin_semilla,2.0,True,True,0,3.558,7,180.0,36.0,463,430,33,0,0.4774
+Solo cultural,genetico_con_semilla_greedy,2.0,True,True,0,3.578,7,180.0,36.0,461,430,31,0,0.463
+Solo cultural,aleatorio,3.0,True,True,0,1.5859999999999999,4,90.0,18.0,429,340,89,30,0.0001
+Solo cultural,genetico_sin_semilla,3.0,True,True,0,3.518,7,180.0,36.0,477,430,47,0,0.4639
+Solo cultural,genetico_con_semilla_greedy,3.0,True,True,0,3.568,7,180.0,36.0,462,430,32,0,0.4351
+Solo cultural,aleatorio,4.0,True,True,0,1.6130000000000002,6,450.0,90.0,414,355,59,60,0.0002
+Solo cultural,genetico_sin_semilla,4.0,True,True,0,3.362,7,230.0,46.0,464,415,49,0,0.4487
+Solo cultural,genetico_con_semilla_greedy,4.0,True,True,0,3.578,7,180.0,36.0,461,430,31,0,0.4442
+Solo cultural,aleatorio,5.0,True,True,0,1.646,4,390.0,78.0,437,375,62,0,0.0001
+Solo cultural,genetico_sin_semilla,5.0,True,True,0,3.552,7,100.0,20.0,466,430,36,0,0.4473
+Solo cultural,genetico_con_semilla_greedy,5.0,True,True,0,3.568,7,180.0,36.0,462,430,32,0,0.4772
+Solo cultural,aleatorio,6.0,True,True,0,2.1559999999999997,6,190.0,38.0,438,370,68,0,0.0001
+Solo cultural,genetico_sin_semilla,6.0,True,True,0,3.558,7,180.0,36.0,463,430,33,0,0.4994
+Solo cultural,genetico_con_semilla_greedy,6.0,True,True,0,3.563,7,180.0,36.0,460,430,30,0,0.4813
+Solo cultural,aleatorio,7.0,True,True,0,1.4380000000000002,5,240.0,48.0,449,355,94,30,0.0001
+Solo cultural,genetico_sin_semilla,7.0,True,True,0,3.588,7,180.0,36.0,460,430,30,0,0.471
+Solo cultural,genetico_con_semilla_greedy,7.0,True,True,0,3.588,7,180.0,36.0,460,430,30,0,0.4611
+Solo cultural,aleatorio,8.0,True,True,0,2.379,6,190.0,38.0,471,415,56,0,0.0001
+Solo cultural,genetico_sin_semilla,8.0,True,True,0,3.588,7,180.0,36.0,460,430,30,0,0.4442
+Solo cultural,genetico_con_semilla_greedy,8.0,True,True,0,3.558,7,180.0,36.0,463,430,33,0,0.4158
+Solo cultural,aleatorio,9.0,True,True,0,1.4109999999999998,5,50.0,10.0,374,280,94,60,0.0001
+Solo cultural,genetico_sin_semilla,9.0,True,True,0,3.563,7,180.0,36.0,460,430,30,0,0.4064
+Solo cultural,genetico_con_semilla_greedy,9.0,True,True,0,3.558,7,180.0,36.0,463,430,33,0,0.4086
+Pareja economica,greedy,,True,True,0,2.8670000000000004,8,220.0,73.3,501,395,80,26,0.0007
+Pareja economica,orden_por_puntaje,,True,True,0,1.24,7,100.0,33.3,500,335,165,0,0.0002
+Pareja economica,aleatorio,0.0,True,True,0,2.088,7,150.0,50.0,588,475,113,0,0.0001
+Pareja economica,genetico_sin_semilla,0.0,True,True,0,3.565,8,220.0,73.3,591,535,56,0,0.4903
+Pareja economica,genetico_con_semilla_greedy,0.0,True,True,0,3.615,8,220.0,73.3,586,535,51,0,0.5289
+Pareja economica,aleatorio,1.0,True,True,0,1.772,8,220.0,73.3,590,395,195,0,0.0001
+Pareja economica,genetico_sin_semilla,1.0,True,True,0,3.535,8,220.0,73.3,589,535,54,0,0.5176
+Pareja economica,genetico_con_semilla_greedy,1.0,True,True,0,3.545,8,220.0,73.3,588,535,53,0,0.4776
+Pareja economica,aleatorio,2.0,True,True,0,1.4620000000000002,6,220.0,73.3,586,430,156,0,0.0002
+Pareja economica,genetico_sin_semilla,2.0,True,True,0,3.367,8,220.0,73.3,448,395,53,0,0.4623
+Pareja economica,genetico_con_semilla_greedy,2.0,True,True,0,3.585,8,220.0,73.3,589,535,54,0,0.4643
+Pareja economica,aleatorio,3.0,True,True,0,1.6250000000000004,7,100.0,33.3,454,335,119,0,0.0001
+Pareja economica,genetico_sin_semilla,3.0,True,True,0,3.407,8,220.0,73.3,444,395,49,0,0.4596
+Pareja economica,genetico_con_semilla_greedy,3.0,True,True,0,3.407,8,220.0,73.3,444,395,49,0,0.4437
+Pareja economica,aleatorio,4.0,True,True,0,0.7589999999999998,5,200.0,66.7,598,490,108,0,0.0002
+Pareja economica,genetico_sin_semilla,4.0,True,True,0,3.3169999999999997,8,220.0,73.3,453,395,58,0,0.4375
+Pareja economica,genetico_con_semilla_greedy,4.0,True,True,0,3.377,8,220.0,73.3,447,395,52,0,0.4554
+Pareja economica,aleatorio,5.0,True,True,0,0.49299999999999977,6,100.0,33.3,586,395,191,0,0.0001
+Pareja economica,genetico_sin_semilla,5.0,True,True,0,3.5549999999999997,8,220.0,73.3,592,535,57,0,0.4754
+Pareja economica,genetico_con_semilla_greedy,5.0,True,True,0,3.585,8,220.0,73.3,589,535,54,0,0.4651
+Pareja economica,aleatorio,6.0,True,True,0,1.0570000000000002,6,100.0,33.3,559,410,149,0,0.0002
+Pareja economica,genetico_sin_semilla,6.0,True,True,0,3.615,8,220.0,73.3,586,535,51,0,0.518
+Pareja economica,genetico_con_semilla_greedy,6.0,True,True,0,3.585,8,220.0,73.3,589,535,54,0,0.4372
+Pareja economica,aleatorio,7.0,True,True,0,1.2550000000000001,7,100.0,33.3,521,335,186,0,0.0001
+Pareja economica,genetico_sin_semilla,7.0,True,True,0,3.55,8,220.0,73.3,590,535,55,0,0.4723
+Pareja economica,genetico_con_semilla_greedy,7.0,True,True,0,3.585,8,220.0,73.3,589,535,54,0,0.4606
+Pareja economica,aleatorio,8.0,True,True,0,0.712,7,120.0,40.0,589,350,239,0,0.0001
+Pareja economica,genetico_sin_semilla,8.0,True,True,0,3.5549999999999997,8,220.0,73.3,592,535,57,0,0.4712
+Pareja economica,genetico_con_semilla_greedy,8.0,True,True,0,3.5949999999999998,8,220.0,73.3,588,535,53,0,0.4802
+Pareja economica,aleatorio,9.0,True,True,0,0.9829999999999999,6,100.0,33.3,552,395,157,0,0.0002
+Pareja economica,genetico_sin_semilla,9.0,True,True,0,3.397,8,220.0,73.3,445,395,50,0,0.4519
+Pareja economica,genetico_con_semilla_greedy,9.0,True,True,0,3.3419999999999996,8,220.0,73.3,448,395,53,0,0.4579
+Amigos en el Centro,greedy,,True,True,0,1.8559999999999999,6,560.0,93.3,525,435,51,39,0.0007
+Amigos en el Centro,orden_por_puntaje,,True,True,0,1.158,6,470.0,78.3,440,360,80,90,0.0002
+Amigos en el Centro,aleatorio,0.0,True,True,0,1.526,5,530.0,88.3,421,375,46,90,0.0002
+Amigos en el Centro,genetico_sin_semilla,0.0,True,True,0,2.596,7,500.0,83.3,514,475,39,0,0.4693
+Amigos en el Centro,genetico_con_semilla_greedy,0.0,True,True,0,2.581,7,500.0,83.3,513,475,38,0,0.6109
+Amigos en el Centro,aleatorio,1.0,True,True,0,0.903,5,540.0,90.0,512,405,46,61,0.0001
+Amigos en el Centro,genetico_sin_semilla,1.0,True,True,0,2.5709999999999997,7,500.0,83.3,514,475,39,0,0.4871
+Amigos en el Centro,genetico_con_semilla_greedy,1.0,True,True,0,2.581,7,500.0,83.3,513,475,38,0,0.476
+Amigos en el Centro,aleatorio,2.0,True,True,0,1.2320000000000002,6,530.0,88.3,493,375,63,55,0.0001
+Amigos en el Centro,genetico_sin_semilla,2.0,True,True,0,2.585,7,550.0,91.7,535,495,40,0,0.4631
+Amigos en el Centro,genetico_con_semilla_greedy,2.0,True,True,0,2.462,7,600.0,100.0,498,460,38,0,0.4814
+Amigos en el Centro,aleatorio,3.0,True,True,0,1.0170000000000003,6,530.0,88.3,417,375,42,120,0.0001
+Amigos en el Centro,genetico_sin_semilla,3.0,True,True,0,2.59,7,550.0,91.7,537,495,42,0,0.5133
+Amigos en el Centro,genetico_con_semilla_greedy,3.0,True,True,0,2.5509999999999997,7,580.0,96.7,514,475,39,0,0.4696
+Amigos en el Centro,aleatorio,4.0,True,True,0,0.513,6,400.0,66.7,506,450,56,0,0.0002
+Amigos en el Centro,genetico_sin_semilla,4.0,True,True,0,2.5999999999999996,7,550.0,91.7,536,495,41,0,0.4495
+Amigos en el Centro,genetico_con_semilla_greedy,4.0,True,True,0,2.61,7,550.0,91.7,535,495,40,0,0.4495
+Amigos en el Centro,aleatorio,5.0,True,True,0,1.726,6,570.0,95.0,479,430,49,0,0.0002
+Amigos en el Centro,genetico_sin_semilla,5.0,True,True,0,2.596,7,500.0,83.3,514,475,39,0,0.5248
+Amigos en el Centro,genetico_con_semilla_greedy,5.0,True,True,0,2.5869999999999997,7,470.0,78.3,486,445,41,0,0.4703
+Amigos en el Centro,aleatorio,6.0,True,True,0,1.3330000000000002,5,600.0,100.0,369,330,39,0,0.0002
+Amigos en el Centro,genetico_sin_semilla,6.0,True,True,0,2.596,7,500.0,83.3,514,475,39,0,0.5134
+Amigos en el Centro,genetico_con_semilla_greedy,6.0,True,True,0,2.61,7,550.0,91.7,535,495,40,0,0.4481
+Amigos en el Centro,aleatorio,7.0,True,True,0,1.2109999999999999,5,550.0,91.7,349,315,34,120,0.0001
+Amigos en el Centro,genetico_sin_semilla,7.0,True,True,0,2.61,7,550.0,91.7,535,495,40,0,0.4754
+Amigos en el Centro,genetico_con_semilla_greedy,7.0,True,True,0,2.5469999999999997,7,550.0,91.7,488,445,43,0,0.4882
+Amigos en el Centro,aleatorio,8.0,True,True,0,1.368,5,600.0,100.0,386,345,41,90,0.0001
+Amigos en el Centro,genetico_sin_semilla,8.0,True,True,0,2.5799999999999996,7,550.0,91.7,538,495,43,0,0.497
+Amigos en el Centro,genetico_con_semilla_greedy,8.0,True,True,0,2.5999999999999996,7,550.0,91.7,536,495,41,0,0.4601
+Amigos en el Centro,aleatorio,9.0,True,True,0,1.8320000000000003,7,530.0,88.3,540,490,50,0,0.0001
+Amigos en el Centro,genetico_sin_semilla,9.0,True,True,0,2.5869999999999997,7,470.0,78.3,486,445,41,0,0.4837
+Amigos en el Centro,genetico_con_semilla_greedy,9.0,True,True,0,2.577,7,470.0,78.3,487,445,42,0,0.5084
+Adultos mayores,greedy,,True,True,0,2.804,6,270.0,45.0,479,385,49,45,0.0006
+Adultos mayores,orden_por_puntaje,,True,True,0,1.8320000000000003,6,200.0,33.3,479,385,94,0,0.0001
+Adultos mayores,aleatorio,0.0,True,True,0,1.148,4,190.0,31.7,421,295,41,85,0.0001
+Adultos mayores,genetico_sin_semilla,0.0,True,True,0,3.559,7,400.0,66.7,479,445,34,0,0.4786
+Adultos mayores,genetico_con_semilla_greedy,0.0,True,True,0,3.104,6,270.0,45.0,427,385,41,1,0.459
+Adultos mayores,aleatorio,1.0,True,True,0,2.644,6,270.0,45.0,470,385,85,0,0.0001
+Adultos mayores,genetico_sin_semilla,1.0,True,True,0,3.129,6,350.0,58.3,424,385,35,4,0.4281
+Adultos mayores,genetico_con_semilla_greedy,1.0,True,True,0,3.114,6,350.0,58.3,426,385,41,0,0.4284
+Adultos mayores,aleatorio,2.0,True,True,0,2.6599999999999997,6,360.0,60.0,477,415,62,0,0.0002
+Adultos mayores,genetico_sin_semilla,2.0,True,True,0,3.599,7,400.0,66.7,475,445,30,0,0.4223
+Adultos mayores,genetico_con_semilla_greedy,2.0,True,True,0,3.209,6,270.0,45.0,416,385,31,0,0.4258
+Adultos mayores,aleatorio,3.0,True,True,0,1.7570000000000003,5,150.0,25.0,399,325,74,30,0.0001
+Adultos mayores,genetico_sin_semilla,3.0,True,True,0,3.089,6,350.0,58.3,426,385,41,0,0.4507
+Adultos mayores,genetico_con_semilla_greedy,3.0,True,True,0,3.144,6,270.0,45.0,420,385,35,0,0.4244
+Adultos mayores,aleatorio,4.0,True,True,0,1.4449999999999998,5,310.0,51.7,420,340,80,60,0.0001
+Adultos mayores,genetico_sin_semilla,4.0,True,True,0,3.614,7,400.0,66.7,476,445,31,0,0.4201
+Adultos mayores,genetico_con_semilla_greedy,4.0,True,True,0,3.144,6,270.0,45.0,420,385,35,0,0.4696
+Adultos mayores,aleatorio,5.0,True,True,0,1.5739999999999998,5,220.0,36.7,431,310,121,0,0.0002
+Adultos mayores,genetico_sin_semilla,5.0,True,True,0,3.104,6,350.0,58.3,427,385,42,0,0.438
+Adultos mayores,genetico_con_semilla_greedy,5.0,True,True,0,3.614,7,400.0,66.7,476,445,31,0,0.5101
+Adultos mayores,aleatorio,6.0,True,True,0,0.9820000000000001,5,290.0,48.3,397,325,72,60,0.0002
+Adultos mayores,genetico_sin_semilla,6.0,True,True,0,3.604,7,400.0,66.7,477,445,32,0,0.4541
+Adultos mayores,genetico_con_semilla_greedy,6.0,True,True,0,3.589,7,400.0,66.7,476,445,31,0,0.4706
+Adultos mayores,aleatorio,7.0,True,True,0,1.1760000000000002,5,200.0,33.3,432,295,71,96,0.0001
+Adultos mayores,genetico_sin_semilla,7.0,True,True,0,3.1879999999999997,6,400.0,66.7,433,405,28,0,0.4367
+Adultos mayores,genetico_con_semilla_greedy,7.0,True,True,0,3.184,6,270.0,45.0,421,385,36,0,0.4065
+Adultos mayores,aleatorio,8.0,True,True,0,1.463,5,240.0,40.0,447,355,92,0,0.0001
+Adultos mayores,genetico_sin_semilla,8.0,True,True,0,3.109,6,270.0,45.0,426,385,41,0,0.4548
+Adultos mayores,genetico_con_semilla_greedy,8.0,True,True,0,3.104,6,270.0,45.0,427,385,41,1,0.4529
+Adultos mayores,aleatorio,9.0,True,True,0,2.2270000000000003,6,200.0,33.3,452,385,67,0,0.0001
+Adultos mayores,genetico_sin_semilla,9.0,True,True,0,3.594,7,400.0,66.7,478,445,33,0,0.4856
+Adultos mayores,genetico_con_semilla_greedy,9.0,True,True,0,3.5989999999999998,7,400.0,66.7,480,445,35,0,0.4519
+Presupuesto minimo,greedy,,True,True,0,2.595,7,0.0,0.0,503,430,73,0,0.0007
+Presupuesto minimo,orden_por_puntaje,,True,True,0,1.6350000000000002,6,0.0,0.0,489,385,104,0,0.0001
+Presupuesto minimo,aleatorio,0.0,True,True,0,1.782,6,0.0,0.0,535,460,75,0,0.0002
+Presupuesto minimo,genetico_sin_semilla,0.0,True,True,0,3.036,8,0.0,0.0,531,475,56,0,0.4406
+Presupuesto minimo,genetico_con_semilla_greedy,0.0,True,True,0,3.136,8,0.0,0.0,526,475,51,0,0.5262
+Presupuesto minimo,aleatorio,1.0,True,True,0,1.6300000000000001,7,0.0,0.0,528,385,143,0,0.0003
+Presupuesto minimo,genetico_sin_semilla,1.0,True,True,0,3.176,8,0.0,0.0,517,475,42,0,0.468
+Presupuesto minimo,genetico_con_semilla_greedy,1.0,True,True,0,3.256,8,0.0,0.0,514,475,39,0,0.4556
+Presupuesto minimo,aleatorio,2.0,True,True,0,1.3029999999999997,6,0.0,0.0,464,400,64,60,0.0001
+Presupuesto minimo,genetico_sin_semilla,2.0,True,True,0,3.036,8,0.0,0.0,531,475,56,0,0.4393
+Presupuesto minimo,genetico_con_semilla_greedy,2.0,True,True,0,3.146,8,0.0,0.0,525,475,50,0,0.426
+Presupuesto minimo,aleatorio,3.0,True,True,0,1.8590000000000004,7,0.0,0.0,498,385,113,0,0.0001
+Presupuesto minimo,genetico_sin_semilla,3.0,True,True,0,3.186,8,0.0,0.0,516,475,41,0,0.4294
+Presupuesto minimo,genetico_con_semilla_greedy,3.0,True,True,0,3.061,8,0.0,0.0,531,475,56,0,0.4421
+Presupuesto minimo,aleatorio,4.0,True,True,0,1.3250000000000002,5,0.0,0.0,538,510,28,0,0.0002
+Presupuesto minimo,genetico_sin_semilla,4.0,True,True,0,3.156,8,0.0,0.0,519,475,44,0,0.4331
+Presupuesto minimo,genetico_con_semilla_greedy,4.0,True,True,0,3.2110000000000003,8,0.0,0.0,526,475,51,0,0.4268
+Presupuesto minimo,aleatorio,5.0,True,True,0,1.0170000000000001,5,0.0,0.0,507,385,122,0,0.0002
+Presupuesto minimo,genetico_sin_semilla,5.0,True,True,0,3.13,8,0.0,0.0,532,475,57,0,0.5026
+Presupuesto minimo,genetico_con_semilla_greedy,5.0,True,True,0,3.146,8,0.0,0.0,525,475,50,0,0.4238
+Presupuesto minimo,aleatorio,6.0,True,True,0,1.053,6,0.0,0.0,437,330,107,60,0.0001
+Presupuesto minimo,genetico_sin_semilla,6.0,True,True,0,3.13,8,0.0,0.0,532,475,57,0,0.4306
+Presupuesto minimo,genetico_con_semilla_greedy,6.0,True,True,0,3.215,8,0.0,0.0,521,475,46,0,0.4773
+Presupuesto minimo,aleatorio,7.0,True,True,0,1.258,6,0.0,0.0,486,340,146,0,0.0002
+Presupuesto minimo,genetico_sin_semilla,7.0,True,True,0,3.2359999999999998,8,0.0,0.0,516,475,41,0,0.5021
+Presupuesto minimo,genetico_con_semilla_greedy,7.0,True,True,0,3.1759999999999997,8,0.0,0.0,522,475,47,0,0.465
+Presupuesto minimo,aleatorio,8.0,True,True,0,1.2540000000000002,6,0.0,0.0,468,370,98,60,0.0001
+Presupuesto minimo,genetico_sin_semilla,8.0,True,True,0,3.116,8,0.0,0.0,530,475,51,4,0.4474
+Presupuesto minimo,genetico_con_semilla_greedy,8.0,True,True,0,3.175,8,0.0,0.0,525,475,50,0,0.4665
+Presupuesto minimo,aleatorio,9.0,True,True,0,1.199,7,0.0,0.0,520,340,180,0,0.0001
+Presupuesto minimo,genetico_sin_semilla,9.0,True,True,0,2.9709999999999996,8,0.0,0.0,528,460,68,0,0.4274
+Presupuesto minimo,genetico_con_semilla_greedy,9.0,True,True,0,3.166,8,0.0,0.0,523,475,48,0,0.4511
+Lunes de museos,greedy,,True,True,0,2.673,5,520.0,74.3,506,480,26,0,0.0007
+Lunes de museos,orden_por_puntaje,,True,True,0,2.476,6,350.0,50.0,531,445,86,0,0.0002
+Lunes de museos,aleatorio,0.0,True,True,0,1.146,5,240.0,34.3,498,355,114,29,0.0001
+Lunes de museos,genetico_sin_semilla,0.0,True,True,0,3.2739999999999996,7,530.0,75.7,537,490,47,0,0.4659
+Lunes de museos,genetico_con_semilla_greedy,0.0,True,True,0,3.263,7,240.0,34.3,536,490,46,0,0.5165
+Lunes de museos,aleatorio,1.0,True,True,0,1.3879999999999997,5,320.0,45.7,531,405,126,0,0.0002
+Lunes de museos,genetico_sin_semilla,1.0,True,True,0,3.233,7,280.0,40.0,460,430,30,0,0.4571
+Lunes de museos,genetico_con_semilla_greedy,1.0,True,True,0,3.233,7,280.0,40.0,460,430,30,0,0.4687
+Lunes de museos,aleatorio,2.0,True,True,0,1.6369999999999998,7,280.0,40.0,515,385,130,0,0.0002
+Lunes de museos,genetico_sin_semilla,2.0,True,True,0,3.259,7,530.0,75.7,536,490,46,0,0.4746
+Lunes de museos,genetico_con_semilla_greedy,2.0,True,True,0,3.233,7,280.0,40.0,460,430,30,0,0.4115
+Lunes de museos,aleatorio,3.0,True,True,0,1.7659999999999998,5,220.0,31.4,473,400,73,60,0.0001
+Lunes de museos,genetico_sin_semilla,3.0,True,True,0,3.284,7,530.0,75.7,536,490,46,0,0.4315
+Lunes de museos,genetico_con_semilla_greedy,3.0,True,True,0,3.233,7,280.0,40.0,460,430,30,0,0.4125
+Lunes de museos,aleatorio,4.0,True,True,0,0.7019999999999998,6,200.0,28.6,462,340,122,60,0.0001
+Lunes de museos,genetico_sin_semilla,4.0,True,True,0,3.2539999999999996,7,530.0,75.7,539,490,49,0,0.441
+Lunes de museos,genetico_con_semilla_greedy,4.0,True,True,0,3.284,7,530.0,75.7,536,490,46,0,0.488
+Lunes de museos,aleatorio,5.0,True,True,0,2.398,7,280.0,40.0,531,430,101,0,0.0001
+Lunes de museos,genetico_sin_semilla,5.0,True,True,0,3.256,7,610.0,87.1,537,490,47,0,0.4033
+Lunes de museos,genetico_con_semilla_greedy,5.0,True,True,0,3.2739999999999996,7,530.0,75.7,537,490,47,0,0.4113
+Lunes de museos,aleatorio,6.0,True,True,0,1.3210000000000002,6,320.0,45.7,523,400,123,0,0.0001
+Lunes de museos,genetico_sin_semilla,6.0,True,True,0,3.2739999999999996,7,530.0,75.7,537,490,47,0,0.4153
+Lunes de museos,genetico_con_semilla_greedy,6.0,True,True,0,3.267,7,450.0,64.3,537,490,47,0,0.4184
+Lunes de museos,aleatorio,7.0,True,True,0,1.7639999999999998,5,570.0,81.4,472,415,55,62,0.0001
+Lunes de museos,genetico_sin_semilla,7.0,True,True,0,3.264,7,530.0,75.7,538,490,48,0,0.4119
+Lunes de museos,genetico_con_semilla_greedy,7.0,True,True,0,3.264,7,530.0,75.7,538,490,48,0,0.4442
+Lunes de museos,aleatorio,8.0,True,True,0,2.1639999999999997,6,240.0,34.3,485,400,85,0,0.0001
+Lunes de museos,genetico_sin_semilla,8.0,True,True,0,3.284,7,530.0,75.7,536,490,46,0,0.4513
+Lunes de museos,genetico_con_semilla_greedy,8.0,True,True,0,3.226,7,580.0,82.9,536,505,31,0,0.4215
+Lunes de museos,aleatorio,9.0,True,True,0,2.418,7,280.0,40.0,539,430,109,0,0.0001
+Lunes de museos,genetico_sin_semilla,9.0,True,True,0,3.2739999999999996,7,530.0,75.7,537,490,47,0,0.4543
+Lunes de museos,genetico_con_semilla_greedy,9.0,True,True,0,3.223,7,280.0,40.0,461,430,31,0,0.4323

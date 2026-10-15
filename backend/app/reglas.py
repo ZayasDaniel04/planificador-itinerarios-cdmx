@@ -1,4 +1,9 @@
 """Sistema experto: reglas por tipo de grupo."""
+from app.horarios import a_min, ventanas_lugar
+
+# Si es True, se descartan los lugares que nunca podrian visitarse dentro del horario del dia
+# del usuario (por ejemplo, un bar que abre a las 17:00 para alguien que sale a las 14:00).
+FILTRO_VIABILIDAD_HORARIA = True
 
 # Bono (+) o penalizacion (-) al puntaje segun grupo y categoria
 AJUSTE_GRUPO = {
@@ -53,11 +58,20 @@ def pasa_filtros(lugar, perfil):
     # zona
     if perfil.zona and lugar["zona"] != perfil.zona:
         return False
-    # dia cerrado
-    cerrado = str(lugar.get("dias_cerrado", "") or "")
-    if perfil.dia_semana and perfil.dia_semana in cerrado:
+    # dia cerrado y horario: se usa el horario real de OSM si existe; si no, la estimacion
+    # por categoria (ver app/horarios.py)
+    ventanas, _ = ventanas_lugar(lugar, perfil.dia_semana)
+    if not ventanas:
+        return False
+    if FILTRO_VIABILIDAD_HORARIA and not _cabe_en_el_dia(ventanas, lugar["duracion_min"], perfil):
         return False
     return True
+
+
+def _cabe_en_el_dia(ventanas, duracion, perfil):
+    """True si en alguna ventana de apertura cabe la visita completa dentro del horario del usuario."""
+    inicio_dia, fin_dia = a_min(perfil.hora_inicio), a_min(perfil.hora_fin)
+    return any(max(ini, inicio_dia) + int(duracion) <= min(fin, fin_dia) for ini, fin in ventanas)
 
 
 def ajuste_reglas(lugar, perfil):

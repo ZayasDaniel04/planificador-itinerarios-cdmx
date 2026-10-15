@@ -1,0 +1,73 @@
+{
+  "total_registros": 299,
+  "usables": 299,
+  "no_usables": 0,
+  "registros_con_alguna_bandera": 31,
+  "banderas": {
+    "lejos_de_su_zona": 24,
+    "horario_osm_no_interpretable": 6,
+    "nombre_no_latino_revisar": 1,
+    "fuera_de_caja_de_descarga": 1
+  },
+  "duplicados": [],
+  "coordenadas_invalidas": 0,
+  "coordenadas_en_el_borde_de_la_caja": 1,
+  "procedencia": {
+    "horario": {
+      "osm": 237,
+      "estimado_categoria": 62
+    },
+    "costo": {
+      "estimado_categoria": 280,
+      "osm_fee_no": 19
+    },
+    "duracion": {
+      "estimado_categoria": 299
+    },
+    "atributos_ninos_mayores_actividad_ambiente": {
+      "estimado_categoria": 299
+    }
+  },
+  "porcentaje_horario_real": 79.3,
+  "campos_vacios": {
+    "horario_osm": 56,
+    "sitio_web": 104,
+    "tipo_comida": 205,
+    "costo_osm": 247,
+    "osm_id": 0
+  },
+  "por_zona": {
+    "Roma-Condesa": 103,
+    "Centro Historico": 69,
+    "Polanco-Chapultepec": 62,
+    "Coyoacan": 42,
+    "San Angel": 23
+  },
+  "por_categoria": {
+    "restaurante": 60,
+    "cafeteria": 40,
+    "museo": 40,
+    "atraccion": 30,
+    "bar": 25,
+    "parque": 24,
+    "mercado": 15,
+    "teatro": 12,
+    "jardin": 10,
+    "libreria": 10,
+    "centro_comercial": 8,
+    "galeria": 7,
+    "mirador": 7,
+    "cine": 6,
+    "zoologico": 5
+  },
+  "crudo_osm": {
+    "registros": 5288,
+    "osm_id_repetidos": 0,
+    "sin_nombre": 0,
+    "coordenadas_invalidas": {},
+    "mismo_nombre_y_categoria": 840,
+    "con_horario_osm": 977,
+    "con_sitio_web": 552,
+    "con_etiqueta_fee": 66
+  }
+}

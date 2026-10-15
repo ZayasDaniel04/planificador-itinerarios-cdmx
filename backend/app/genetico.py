@@ -1,105 +1,45 @@
-"""Algoritmo genetico para el itinerario, comparable con el greedy."""
+"""Algoritmo genetico para el itinerario, comparable con el voraz.
+
+Comparte con el voraz TODO lo demas: el mismo pool de candidatos (itinerario.construir_pool),
+las mismas restricciones (restricciones.revisar_parada) y la misma funcion fitness
+(fitness.fitness). Solo cambia la estrategia de busqueda.
+
+  Individuo   permutacion de los candidatos. simular() recorre ese orden y agrega cada lugar
+              que cumpla las restricciones, asi que TODO individuo produce un itinerario valido
+              (restricciones manejadas por construccion, sin penalizaciones).
+  Fitness     fitness.fitness(ruta, perfil)
+  Seleccion   torneo de 3
+  Cruce       de orden (OX), probabilidad 0.9
+  Mutacion    intercambio (0.4) y movimiento de un lugar (0.4)
+  Elitismo    los 2 mejores pasan intactos
+"""
 import random
 import time
 
-from app.itinerario import (a_min, a_hhmm, traslado_min, construir, resumen,
-                            VENTANA_COMIDA, COMIDA_FUERTE, MAX_POR_CATEGORIA, MAX_DEFAULT)
-from app.recomendador import recomendar
+from app.fitness import fitness                                         # noqa: F401 (re-export)
+from app.itinerario import construir_desde_candidatos, construir_pool, resumen
+from app.restricciones import (EstadoDia, preparar_candidatos, revisar_parada, agregar_parada,
+                               validar_itinerario)
 
-ESPERA_MAX = 120
+POBLACION = 60
+GENERACIONES = 80
+SEMILLA_ALEATORIA = 42
 
 
-def preparar(pool):
-    """Convierte el pool (DataFrame) en una lista de diccionarios, mas rapida de simular."""
-    filas = []
-    for _, l in pool.iterrows():
-        filas.append({
-            "id": int(l["id"]),
-            "nombre": str(l["nombre"]),
-            "categoria": str(l["categoria"]),
-            "zona": str(l["zona"]),
-            "lat": float(l["lat"]),
-            "lon": float(l["lon"]),
-            "apertura": a_min(l["hora_apertura"]),
-            "cierre": a_min(l["hora_cierre"]),
-            "duracion": int(l["duracion_min"]),
-            "costo": float(l["costo_estimado"]),
-            "puntaje": float(l["puntaje"]),
-        })
-    return filas
+def preparar(pool, perfil, usar_horarios_osm=True):
+    """Convierte el pool (DataFrame) en candidatos, igual que hace el voraz."""
+    return preparar_candidatos(pool, perfil, usar_horarios_osm)
 
 
 def simular(orden, filas, perfil):
     """Recorre los lugares en el orden dado y se queda con los que caben en el dia."""
-    fin_dia = a_min(perfil.hora_fin)
-    reloj = a_min(perfil.hora_inicio)
-    gasto = 0.0
-    actual = None
-    por_cat = {}
-    comio = False
-    ruta = []
+    estado = EstadoDia(perfil)
     for i in orden:
-        l = filas[i]
-        cat = l["categoria"]
-        if por_cat.get(cat, 0) >= MAX_POR_CATEGORIA.get(cat, MAX_DEFAULT):
-            continue
-        fuerte = cat in COMIDA_FUERTE
-        if fuerte and comio:
-            continue
-        tras = traslado_min(actual, l) if actual is not None else 0
-        llegada = reloj + tras
-        inicio_v = max(llegada, l["apertura"])
-        if fuerte:
-            inicio_v = max(inicio_v, VENTANA_COMIDA[0])
-            if inicio_v > VENTANA_COMIDA[1]:
-                continue
-        espera = inicio_v - llegada
-        fin_v = inicio_v + l["duracion"]
-        if espera > ESPERA_MAX or fin_v > fin_dia or fin_v > l["cierre"]:
-            continue
-        if gasto + l["costo"] > perfil.presupuesto_por_persona:
-            continue
-        ruta.append({
-            "orden": len(ruta) + 1,
-            "id": l["id"],
-            "nombre": l["nombre"],
-            "categoria": cat,
-            "zona": l["zona"],
-            "lat": l["lat"],
-            "lon": l["lon"],
-            "llegada": a_hhmm(inicio_v),
-            "salida": a_hhmm(fin_v),
-            "duracion_min": l["duracion"],
-            "traslado_min": int(tras),
-            "espera_min": int(espera),
-            "costo_estimado": l["costo"],
-            "puntaje": round(l["puntaje"], 3),
-        })
-        reloj = fin_v
-        gasto += l["costo"]
-        actual = l
-        por_cat[cat] = por_cat.get(cat, 0) + 1
-        if fuerte:
-            comio = True
-    return ruta
-
-
-def fitness(ruta, perfil):
-    """Calidad de un itinerario (mayor es mejor). Sirve para greedy y genetico."""
-    if not ruta:
-        return -1e9
-    f = sum(p["puntaje"] for p in ruta)
-    f -= 0.01 * sum(p["traslado_min"] for p in ruta)
-    f -= 0.005 * sum(p["espera_min"] for p in ruta)
-    if any(p["categoria"] in COMIDA_FUERTE for p in ruta):
-        f += 0.5
-    for a, b in zip(ruta, ruta[1:]):
-        if a["categoria"] == b["categoria"]:
-            f -= 0.15
-    nocturno = perfil.intereses.get("vida_nocturna", 0) >= 0.5 and a_min(perfil.hora_fin) >= 21 * 60
-    if nocturno and any(p["categoria"] == "bar" for p in ruta):
-        f += 0.4
-    return f
+        c = filas[i]
+        datos, _ = revisar_parada(estado, c, perfil)
+        if datos is not None:
+            agregar_parada(estado, c, datos)
+    return estado.ruta
 
 
 def _cruce(p1, p2, rnd):
@@ -121,10 +61,19 @@ def _mutar(ind, rnd):
         ind.insert(rnd.randrange(len(ind) + 1), g)
 
 
-def genetico(filas, perfil, semilla=None, poblacion=60, generaciones=80, seed=42):
+def genetico(filas, perfil, semilla=None, poblacion=POBLACION, generaciones=GENERACIONES,
+             seed=SEMILLA_ALEATORIA):
+    """Devuelve (ruta, fitness, historial).
+
+    `semilla` es opcional: un orden inicial (por ejemplo, la ruta del voraz) que se agrega a la
+    poblacion. `seed` es la semilla del generador aleatorio: misma seed + mismos datos = mismo
+    resultado."""
     rnd = random.Random(seed)
     n = len(filas)
     base = list(range(n))
+    if n < 2:                                   # nada que combinar
+        ruta = simular(base, filas, perfil)
+        return ruta, fitness(ruta, perfil), [round(fitness(ruta, perfil), 3)]
     pob = []
     if semilla:
         en_sem = set(semilla)
@@ -141,7 +90,7 @@ def genetico(filas, perfil, semilla=None, poblacion=60, generaciones=80, seed=42
         return fitness(ruta, perfil), ruta
 
     def torneo(pob, evals):
-        cand = rnd.sample(range(len(pob)), 3)
+        cand = rnd.sample(range(len(pob)), min(3, len(pob)))
         return pob[max(cand, key=lambda i: evals[i][0])]
 
     evals = [evaluar(ind) for ind in pob]
@@ -165,27 +114,42 @@ def genetico(filas, perfil, semilla=None, poblacion=60, generaciones=80, seed=42
     return evals[mejor][1], evals[mejor][0], historial
 
 
-def comparar(df, perfil, generaciones=80, poblacion=60, con_semilla=True):
-    """Corre greedy y genetico sobre los mismos candidatos y devuelve ambos resultados."""
-    pool = recomendar(df, perfil, n=40, max_por_categoria=8)
+def _resultado(ruta, perfil, df, segundos, historial=None):
+    res = {"ruta": ruta, "fitness": fitness(ruta, perfil), "seg": segundos,
+           "resumen": resumen(ruta), "violaciones": validar_itinerario(ruta, perfil, df)}
+    if historial is not None:
+        res["historial"] = historial
+    return res
+
+
+def comparar(df, perfil, generaciones=GENERACIONES, poblacion=POBLACION, con_semilla=True,
+             seed=SEMILLA_ALEATORIA, usar_horarios_osm=True, pesos=None):
+    """Corre voraz y genetico sobre los mismos candidatos y restricciones.
+
+    con_semilla=True agrega la ruta del voraz a la poblacion inicial (el genetico no puede
+    quedar peor que el voraz). Para una comparacion justa del algoritmo en si, usar
+    con_semilla=False. Devuelve None si ningun lugar pasa los filtros del perfil."""
+    pool = construir_pool(df, perfil, pesos)
     if pool.empty:
         return None
-    filas = preparar(pool)
+    filas = preparar(pool, perfil, usar_horarios_osm)
 
-    t0 = time.time()
-    ruta_g = construir(pool, perfil)
-    t_g = time.time() - t0
-    res_g = {"ruta": ruta_g, "fitness": fitness(ruta_g, perfil),
-             "seg": t_g, "resumen": resumen(ruta_g)}
-
-    if len(filas) < 5 or not ruta_g:
-        return {"greedy": res_g, "genetico": res_g}
+    t0 = time.perf_counter()
+    ruta_g = construir_desde_candidatos(filas, perfil)
+    res_g = _resultado(ruta_g, perfil, df, time.perf_counter() - t0)
 
     pos = {f["id"]: i for i, f in enumerate(filas)}
-    semilla = [pos[p["id"]] for p in ruta_g] if con_semilla else None
-    t0 = time.time()
-    ruta_ga, f_ga, hist = genetico(filas, perfil, semilla, poblacion, generaciones)
-    t_ga = time.time() - t0
-    res_ga = {"ruta": ruta_ga, "fitness": f_ga, "seg": t_ga,
-              "resumen": resumen(ruta_ga), "historial": hist}
+    semilla = [pos[p["id"]] for p in ruta_g] if (con_semilla and ruta_g) else None
+    t0 = time.perf_counter()
+    ruta_ga, _, hist = genetico(filas, perfil, semilla, poblacion, generaciones, seed)
+    res_ga = _resultado(ruta_ga, perfil, df, time.perf_counter() - t0, hist)
     return {"greedy": res_g, "genetico": res_ga}
+
+
+def generar_itinerario_genetico(df, perfil, seed=SEMILLA_ALEATORIA, con_semilla=True):
+    """Devuelve el itinerario del genetico con el mismo formato que el voraz."""
+    r = comparar(df, perfil, con_semilla=con_semilla, seed=seed)
+    if r is None:
+        return {"paradas": [], "resumen": resumen([])}
+    g = r["genetico"]
+    return {"paradas": g["ruta"], "resumen": g["resumen"]}

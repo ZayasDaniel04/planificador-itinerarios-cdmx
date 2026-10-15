@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass, field
 
 # Ejes de preferencia: cada lugar y cada usuario se describen con estos 8 intereses
@@ -43,6 +44,39 @@ class Perfil:
     def vector(self):
         """Vector del usuario en el orden de INTERESES."""
         return [float(self.intereses.get(i, 0.0)) for i in INTERESES]
+
+    def validar(self):
+        """Devuelve la lista de problemas del perfil (vacia = perfil valido)."""
+        from app.calidad_datos import ZONAS
+        from app.horarios import indice_dia
+        errores = []
+        if self.tipo_grupo not in TIPOS_GRUPO:
+            errores.append(f"tipo_grupo debe ser uno de {TIPOS_GRUPO}")
+        if self.personas < 1:
+            errores.append("personas debe ser al menos 1")
+        if self.presupuesto_por_persona < 0:
+            errores.append("presupuesto_por_persona no puede ser negativo")
+        if self.nivel_actividad not in (1, 2, 3):
+            errores.append("nivel_actividad debe ser 1, 2 o 3")
+        horas = {}
+        for campo in ("hora_inicio", "hora_fin"):
+            m = re.fullmatch(r"(\d{1,2}):(\d{2})", str(getattr(self, campo)))
+            if not m or int(m.group(1)) > 23 or int(m.group(2)) > 59:
+                errores.append(f"{campo} debe tener formato HH:MM (00:00 a 23:59)")
+            else:
+                horas[campo] = int(m.group(1)) * 60 + int(m.group(2))
+        if len(horas) == 2 and horas["hora_fin"] <= horas["hora_inicio"]:
+            errores.append("hora_fin debe ser posterior a hora_inicio")
+        if self.dia_semana and indice_dia(self.dia_semana) is None:
+            errores.append("dia_semana debe ser lunes, martes, miercoles, jueves, viernes, sabado o domingo")
+        if self.zona and self.zona not in ZONAS:
+            errores.append(f"zona debe estar vacia o ser una de {list(ZONAS)}")
+        for interes, peso in self.intereses.items():
+            if interes not in INTERESES:
+                errores.append(f"interes desconocido: {interes!r} (validos: {INTERESES})")
+            elif not 0 <= peso <= 1:
+                errores.append(f"el peso del interes {interes!r} debe estar entre 0 y 1")
+        return errores
 
 
 def vector_lugar(categoria):

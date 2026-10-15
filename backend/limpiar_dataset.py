@@ -1,15 +1,53 @@
+"""Genera data/lugares_limpio.csv desde el crudo de OpenStreetMap (data/lugares_raw.csv).
+
+CUIDADO: este script regenera el CSV desde cero y BORRARIA las correcciones manuales
+(lugares eliminados, costos editados...). Por eso se niega a sobrescribir un CSV que ya
+existe, salvo que se use --forzar. Para mejorar el dataset actual usa mejorar_dataset.py.
+
+Uso (desde backend/):
+    python limpiar_dataset.py --salida ../data/prueba.csv     # genera en otro archivo
+    python limpiar_dataset.py --forzar                        # sobrescribe lugares_limpio.csv
+"""
+import argparse
+import sys
+from pathlib import Path
+
 import pandas as pd
 
-df = pd.read_csv("../data/lugares_raw.csv")
+from app.calidad_datos import (COLUMNAS_DEFECTO, DEFECTOS_CATEGORIA, ZONAS, asignar_zona,
+                               motivo_coordenada_invalida)
+
+DATOS = Path(__file__).resolve().parents[1] / "data"
+
+ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+ap.add_argument("--salida", default=str(DATOS / "lugares_limpio.csv"))
+ap.add_argument("--forzar", action="store_true", help="permite sobrescribir un CSV existente")
+args = ap.parse_args()
+salida = Path(args.salida)
+if salida.exists() and not args.forzar:
+    sys.exit(f"{salida} ya existe y puede tener correcciones manuales. "
+             "Usa --salida otro.csv para generar aparte, o --forzar si de verdad quieres sobrescribirlo.")
+
+df = pd.read_csv(DATOS / "lugares_raw.csv")
 print("Lugares crudos:", len(df))
 
 # ---------- 1. LIMPIEZA ----------
 df = df.dropna(subset=["nombre", "lat", "lon"])
 df["nombre"] = df["nombre"].str.strip()
+df = df[df["nombre"] != ""]
+# coordenadas invalidas (vacias, en cero, invertidas o lejos de la zona de estudio)
+invalidas = [bool(motivo_coordenada_invalida(a, b)) for a, b in zip(df["lat"], df["lon"])]
+print("Descartados por coordenadas invalidas:", sum(invalidas))
+df = df[[not x for x in invalidas]]
+# una sola sucursal por nombre y categoria (decision de diseno: evita que cadenas como Starbucks
+# llenen los cupos; las demas sucursales se descartan a proposito)
 df["nombre_min"] = df["nombre"].str.lower()
+antes = len(df)
 df = df.drop_duplicates(subset=["nombre_min", "categoria"])
+print("Descartados por repetir nombre y categoria:", antes - len(df))
 
 # ---------- 2. SELECCION ----------
+# prioriza los lugares con mas datos reales en OSM (sitio web, horario, tipo de cocina, costo)
 df["puntos"] = (
     df["sitio_web"].notna() * 2
     + df["horario"].notna() * 2
@@ -32,59 +70,27 @@ for cat, cupo in CUPOS.items():
 df = pd.concat(partes)
 
 # ---------- 3. ENRIQUECIMIENTO ----------
-ZONAS = {
-    "Centro Historico": (19.4326, -99.1332),
-    "Roma-Condesa": (19.4120, -99.1700),
-    "Polanco-Chapultepec": (19.4250, -99.1900),
-    "Coyoacan": (19.3500, -99.1620),
-    "San Angel": (19.3470, -99.1900),
-}
+# Zona = la mas cercana de las 5 (ver ZONAS en app/calidad_datos.py)
+df["zona"] = [asignar_zona(a, b) for a, b in zip(df["lat"], df["lon"])]
 
-def zona(lat, lon):
-    return min(ZONAS, key=lambda z: (lat - ZONAS[z][0]) ** 2 + (lon - ZONAS[z][1]) ** 2)
-
-df["zona"] = [zona(a, b) for a, b in zip(df["lat"], df["lon"])]
-
-# duracion_min, costo_estimado (MXN por persona), precio_nivel (1-4),
-# nivel_actividad (1-3), apto_ninos, apto_adultos_mayores, es_comida,
-# hora_apertura, hora_cierre, dias_cerrado, ambiente
-COLS = ["duracion_min", "costo_estimado", "precio_nivel", "nivel_actividad",
-        "apto_ninos", "apto_adultos_mayores", "es_comida",
-        "hora_apertura", "hora_cierre", "dias_cerrado", "ambiente"]
-
-DEF = {
-    "museo":            [90, 80, 2, 1, 1, 1, 0, "10:00", "17:00", "lunes", "cultural|tranquilo"],
-    "galeria":          [45, 0, 1, 1, 0, 1, 0, "11:00", "18:00", "lunes", "cultural|tranquilo|romantico"],
-    "atraccion":        [60, 50, 2, 2, 1, 1, 0, "09:00", "19:00", "", "turistico|animado"],
-    "mirador":          [40, 0, 1, 1, 1, 1, 0, "09:00", "21:00", "", "romantico|tranquilo"],
-    "zoologico":        [180, 50, 1, 3, 1, 0, 0, "09:00", "17:00", "lunes", "familiar|naturaleza"],
-    "parque":           [60, 0, 1, 2, 1, 1, 0, "06:00", "18:00", "", "naturaleza|tranquilo|familiar"],
-    "jardin":           [45, 0, 1, 1, 1, 1, 0, "08:00", "18:00", "", "naturaleza|tranquilo|romantico"],
-    "restaurante":      [75, 250, 3, 1, 1, 1, 1, "09:00", "23:00", "", "animado|familiar"],
-    "cafeteria":        [45, 100, 2, 1, 1, 1, 1, "08:00", "21:00", "", "tranquilo|romantico"],
-    "bar":              [90, 250, 3, 1, 0, 0, 1, "17:00", "23:59", "", "animado|nocturno"],
-    "mercado":          [60, 120, 1, 2, 1, 1, 1, "08:00", "18:00", "", "animado|turistico|familiar"],
-    "teatro":           [120, 300, 3, 1, 1, 1, 0, "17:00", "22:00", "lunes", "cultural|romantico"],
-    "cine":             [120, 90, 2, 1, 1, 1, 0, "12:00", "23:00", "", "tranquilo|familiar"],
-    "libreria":         [40, 0, 1, 1, 1, 1, 0, "10:00", "20:00", "", "tranquilo|cultural"],
-    "centro_comercial": [90, 150, 2, 2, 1, 1, 0, "11:00", "20:00", "", "animado|familiar"],
-}
-
-for i, col in enumerate(COLS):
-    df[col] = df["categoria"].map(lambda c: DEF[c][i])
+# duracion_min, costo_estimado, nivel_actividad, apto_*, horas, ambiente... son VALORES POR
+# DEFECTO DE LA CATEGORIA (ver DEFECTOS_CATEGORIA): estimaciones, no datos de OSM.
+for i, col in enumerate(COLUMNAS_DEFECTO):
+    df[col] = df["categoria"].map(lambda c: DEFECTOS_CATEGORIA[c][i])
 
 df = df.rename(columns={"cocina": "tipo_comida", "horario": "horario_osm"})
 df = df.sort_values(["categoria", "zona", "nombre"]).reset_index(drop=True)
 df.insert(0, "id", df.index + 1)
 
-salida = ["id", "nombre", "categoria", "zona", "lat", "lon", "ambiente",
-          "duracion_min", "costo_estimado", "precio_nivel", "nivel_actividad",
-          "apto_ninos", "apto_adultos_mayores", "es_comida", "tipo_comida",
-          "hora_apertura", "hora_cierre", "dias_cerrado", "horario_osm", "sitio_web"]
-df[salida].to_csv("../data/lugares_limpio.csv", index=False, encoding="utf-8-sig")
+columnas = ["id", "nombre", "categoria", "zona", "lat", "lon", "ambiente",
+            "duracion_min", "costo_estimado", "precio_nivel", "nivel_actividad",
+            "apto_ninos", "apto_adultos_mayores", "es_comida", "tipo_comida",
+            "hora_apertura", "hora_cierre", "dias_cerrado", "horario_osm", "sitio_web"]
+df[columnas].to_csv(salida, index=False, encoding="utf-8-sig")
 
-print("Lugares seleccionados:", len(df))
+print("Lugares seleccionados:", len(df), "->", salida)
 print("\nPor zona:")
 print(df["zona"].value_counts())
 print("\nPor categoria:")
 print(df["categoria"].value_counts())
+print("\nSiguiente paso: python mejorar_dataset.py (agrega procedencia y calidad).")

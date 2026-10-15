@@ -1,131 +1,74 @@
-"""Optimizador de itinerario (version greedy)."""
-import math
+"""Optimizador de itinerario (version greedy / voraz).
 
+Las restricciones NO viven aqui: este modulo solo decide el ORDEN en que se prueban los lugares.
+Cada candidato se valida con restricciones.revisar_parada(), la misma funcion que usa el
+algoritmo genetico, asi que ambos cumplen exactamente las mismas reglas.
+
+Estrategia voraz: en cada paso se elige, entre los lugares que SI se pueden agregar, el de mayor
+`valor` inmediato (aporte al fitness de ese lugar). Nunca se reconsidera una decision ya tomada,
+por eso puede quedar en un optimo local.
+"""
+from app.fitness import PESO_TRASLADO, PESO_ESPERA, PENA_REPETICION, BONO_COMIDA, es_nocturno
+from app.horarios import a_min, a_hhmm                                  # noqa: F401 (re-export)
 from app.recomendador import recomendar
+from app.restricciones import (                                         # noqa: F401 (re-export)
+    VELOCIDAD_KMH, MIN_TRASLADO, VENTANA_COMIDA, COMIDA_FUERTE, MAX_POR_CATEGORIA, MAX_DEFAULT,
+    ESPERA_MAX, distancia_km, traslado_min, EstadoDia, preparar_candidatos, revisar_parada,
+    agregar_parada)
 
-VELOCIDAD_KMH = 18          # velocidad promedio en la ciudad
-MIN_TRASLADO = 5            # minimo por traslado, en minutos
-VENTANA_COMIDA = (12 * 60 + 30, 16 * 60)
-COMIDA_FUERTE = ("restaurante", "mercado")
-MAX_POR_CATEGORIA = {"cafeteria": 1, "libreria": 1, "cine": 1}
-MAX_DEFAULT = 2
-
-
-def a_min(hhmm):
-    h, m = str(hhmm).split(":")
-    return int(h) * 60 + int(m)
+POOL_N = 40                  # candidatos que se pasan al optimizador
+POOL_MAX_POR_CATEGORIA = 8   # diversidad dentro del pool
+ESPERA_PREFERIDA = 45        # el voraz prefiere esperas cortas; solo si no hay, relaja a ESPERA_MAX
 
 
-def a_hhmm(minutos):
-    return f"{minutos // 60:02d}:{minutos % 60:02d}"
+def construir_pool(df, perfil, pesos=None):
+    """Candidatos que reciben tanto el voraz como el genetico (mismo recomendador y filtros)."""
+    return recomendar(df, perfil, n=POOL_N, max_por_categoria=POOL_MAX_POR_CATEGORIA, pesos=pesos)
 
 
-def distancia_km(lat1, lon1, lat2, lon2):
-    """Distancia Haversine entre dos puntos."""
-    r = 6371.0
-    f1, f2 = math.radians(lat1), math.radians(lat2)
-    df = f2 - f1
-    dl = math.radians(lon2 - lon1)
-    a = math.sin(df / 2) ** 2 + math.cos(f1) * math.cos(f2) * math.sin(dl / 2) ** 2
-    return 2 * r * math.asin(math.sqrt(a))
-
-
-def traslado_min(a, b):
-    km = distancia_km(a["lat"], a["lon"], b["lat"], b["lon"])
-    return max(MIN_TRASLADO, round(km / VELOCIDAD_KMH * 60))
-
-
-def construir(pool, perfil):
+def construir_desde_candidatos(candidatos, perfil):
     """Arma el dia eligiendo, en cada paso, el mejor lugar que cumpla las restricciones."""
-    fin_dia = a_min(perfil.hora_fin)
-    reloj = a_min(perfil.hora_inicio)
-    presupuesto = perfil.presupuesto_por_persona
-    gasto = 0.0
-    actual = None
-    usados = set()
-    por_cat = {}
-    comio = False
-    ruta = []
-    # si el grupo quiere vida nocturna, se reserva presupuesto para un bar
-    nocturno = perfil.intereses.get("vida_nocturna", 0) >= 0.5 and fin_dia >= 21 * 60
-    bares = pool[pool["categoria"] == "bar"]
-    reserva = float(bares["costo_estimado"].min()) if (nocturno and not bares.empty) else 0.0
+    estado = EstadoDia(perfil)
+    # si el grupo quiere vida nocturna, se reserva presupuesto para un bar (heuristica del
+    # voraz: no es una restriccion, solo evita gastar todo antes de llegar a la noche)
+    costos_bar = [c["costo"] for c in candidatos if c["categoria"] == "bar"]
+    reserva = min(costos_bar) if (es_nocturno(perfil) and costos_bar) else 0.0
     bar_hecho = False
 
     while True:
         mejor = None
-        for max_espera in (45, 120):     # primero sin esperar casi nada; si no hay, se relaja
+        for espera_max in (ESPERA_PREFERIDA, ESPERA_MAX):
             mejor_val = -1e9
-            for idx, l in pool.iterrows():
-                if idx in usados:
+            for c in candidatos:
+                datos, _ = revisar_parada(estado, c, perfil, espera_max)
+                if datos is None:
                     continue
-                cat = l["categoria"]
-                if por_cat.get(cat, 0) >= MAX_POR_CATEGORIA.get(cat, MAX_DEFAULT):
+                cat = c["categoria"]
+                if cat != "bar" and not bar_hecho and estado.gasto + c["costo"] + reserva > estado.presupuesto:
                     continue
-                fuerte = cat in COMIDA_FUERTE
-                if fuerte and comio:
-                    continue
-
-                tras = traslado_min(actual, l) if actual is not None else 0
-                llegada = reloj + tras
-                inicio_v = max(llegada, a_min(l["hora_apertura"]))
-                if fuerte:
-                    inicio_v = max(inicio_v, VENTANA_COMIDA[0])
-                    if inicio_v > VENTANA_COMIDA[1]:
-                        continue
-                espera = inicio_v - llegada
-                fin_v = inicio_v + int(l["duracion_min"])
-
-                if espera > max_espera:
-                    continue
-                if fin_v > fin_dia or fin_v > a_min(l["hora_cierre"]):
-                    continue
-                if gasto + l["costo_estimado"] > presupuesto:
-                    continue
-                if cat != "bar" and not bar_hecho and gasto + l["costo_estimado"] + reserva > presupuesto:
-                    continue
-
-                valor = l["puntaje"] - 0.01 * tras - 0.005 * espera
-                if actual is not None and cat == actual["categoria"]:
-                    valor -= 0.15
-                if fuerte and not comio:
-                    valor += 0.5          # prioriza que el dia incluya comida
+                _, _, tras, espera = datos
+                valor = c["puntaje"] - PESO_TRASLADO * tras - PESO_ESPERA * espera
+                if estado.actual is not None and cat == estado.actual["categoria"]:
+                    valor -= PENA_REPETICION
+                if cat in COMIDA_FUERTE and not estado.comio:
+                    valor += BONO_COMIDA          # prioriza que el dia incluya comida
                 if valor > mejor_val:
                     mejor_val = valor
-                    mejor = (idx, l, tras, inicio_v, fin_v, espera)
+                    mejor = (c, datos)
             if mejor is not None:
                 break
-
         if mejor is None:
             break
-
-        idx, l, tras, inicio_v, fin_v, espera = mejor
-        ruta.append({
-            "orden": len(ruta) + 1,
-            "id": int(l["id"]),
-            "nombre": str(l["nombre"]),
-            "categoria": str(l["categoria"]),
-            "zona": str(l["zona"]),
-            "lat": float(l["lat"]),
-            "lon": float(l["lon"]),
-            "llegada": a_hhmm(inicio_v),
-            "salida": a_hhmm(fin_v),
-            "duracion_min": int(l["duracion_min"]),
-            "traslado_min": int(tras),
-            "espera_min": int(espera),
-            "costo_estimado": float(l["costo_estimado"]),
-            "puntaje": round(float(l["puntaje"]), 3),
-        })
-        reloj = fin_v
-        gasto += float(l["costo_estimado"])
-        actual = l
-        usados.add(idx)
-        por_cat[l["categoria"]] = por_cat.get(l["categoria"], 0) + 1
-        if l["categoria"] in COMIDA_FUERTE:
-            comio = True
-        if l["categoria"] == "bar":
+        c, datos = mejor
+        agregar_parada(estado, c, datos)
+        if c["categoria"] == "bar":
             bar_hecho = True
-    return ruta
+    return estado.ruta
+
+
+def construir(pool, perfil, usar_horarios_osm=True):
+    """Version que recibe el pool (DataFrame de recomendar)."""
+    return construir_desde_candidatos(preparar_candidatos(pool, perfil, usar_horarios_osm), perfil)
 
 
 def resumen(ruta):
@@ -138,11 +81,17 @@ def resumen(ruta):
         "incluye_comida": any(p["categoria"] in COMIDA_FUERTE for p in ruta),
         "hora_inicio": ruta[0]["llegada"] if ruta else "",
         "hora_fin": ruta[-1]["salida"] if ruta else "",
+        # duracion de punta a punta del itinerario y tiempo realmente dentro de los lugares
+        "duracion_total_min": (a_min(ruta[-1]["salida"]) - a_min(ruta[0]["llegada"])) if ruta else 0,
+        "tiempo_en_lugares_min": sum(p["duracion_min"] for p in ruta),
+        # cuantas paradas descansan en un horario real de OSM y cuantas en una estimacion
+        "paradas_horario_real": sum(1 for p in ruta if p.get("horario_fuente") == "osm"),
+        "paradas_horario_estimado": sum(1 for p in ruta if p.get("horario_fuente") != "osm"),
     }
 
 
 def generar_itinerario(df, perfil):
-    pool = recomendar(df, perfil, n=40, max_por_categoria=8)
+    pool = construir_pool(df, perfil)
     if pool.empty:
         return {"paradas": [], "resumen": resumen([])}
     ruta = construir(pool, perfil)

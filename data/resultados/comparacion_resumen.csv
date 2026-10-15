@@ -1,0 +1,46 @@
+﻿perfil,algoritmo,corridas,validas,con_solucion,fitness_media,fitness_desv,fitness_min,fitness_max,lugares_media,gasto_media,presupuesto_usado_pct_media,duracion_total_media,traslado_media,espera_media,segundos_media
+Adultos mayores,aleatorio,10,10,10,1.708,0.608,0.982,2.66,5.2,243.0,40.5,434.6,76.5,33.1,0.0
+Adultos mayores,orden_por_puntaje,1,1,1,1.832,,1.832,1.832,6.0,200.0,33.3,479.0,94.0,0.0,0.0
+Adultos mayores,greedy,1,1,1,2.804,,2.804,2.804,6.0,270.0,45.0,479.0,49.0,45.0,0.001
+Adultos mayores,genetico_sin_semilla,10,10,10,3.359,0.25,3.089,3.614,6.5,372.0,62.01,452.1,34.7,0.4,0.447
+Adultos mayores,genetico_con_semilla_greedy,10,10,10,3.28,0.223,3.104,3.614,6.3,317.0,52.84,438.9,35.7,0.2,0.45
+Amigos de fiesta,aleatorio,10,10,10,1.912,0.381,1.16,2.414,6.4,830.0,69.16,569.0,101.7,36.8,0.0
+Amigos de fiesta,orden_por_puntaje,1,1,1,1.24,,1.24,1.24,5.0,700.0,58.3,393.0,48.0,90.0,0.0
+Amigos de fiesta,greedy,1,1,1,2.604,,2.604,2.604,6.0,950.0,79.2,461.0,41.0,30.0,0.001
+Amigos de fiesta,genetico_sin_semilla,10,10,10,3.14,0.025,3.104,3.169,6.8,950.0,79.2,533.7,41.7,0.0,0.407
+Amigos de fiesta,genetico_con_semilla_greedy,10,10,10,3.126,0.039,3.034,3.169,7.0,950.0,79.2,554.0,44.0,0.0,0.415
+Amigos en el Centro,aleatorio,10,10,10,1.266,0.391,0.513,1.832,5.6,538.0,89.66,447.2,46.6,53.6,0.0
+Amigos en el Centro,orden_por_puntaje,1,1,1,1.158,,1.158,1.158,6.0,470.0,78.3,440.0,80.0,90.0,0.0
+Amigos en el Centro,greedy,1,1,1,1.856,,1.856,1.856,6.0,560.0,93.3,525.0,51.0,39.0,0.001
+Amigos en el Centro,genetico_sin_semilla,10,10,10,2.591,0.011,2.571,2.61,7.0,522.0,87.0,522.3,40.3,0.0,0.488
+Amigos en el Centro,genetico_con_semilla_greedy,10,10,10,2.571,0.044,2.462,2.61,7.0,532.0,88.67,510.5,40.0,0.0,0.486
+Familia con ninos,aleatorio,10,10,10,1.414,0.696,0.42,2.716,5.2,192.0,38.4,503.2,111.8,16.4,0.0
+Familia con ninos,orden_por_puntaje,1,1,1,1.437,,1.437,1.437,4.0,100.0,20.0,531.0,66.0,0.0,0.0
+Familia con ninos,greedy,1,1,1,2.894,,2.894,2.894,6.0,350.0,70.0,529.0,64.0,0.0,0.001
+Familia con ninos,genetico_sin_semilla,10,10,10,3.278,0.108,3.082,3.407,6.8,272.0,54.4,473.3,44.3,0.0,0.467
+Familia con ninos,genetico_con_semilla_greedy,10,10,10,3.3,0.099,3.044,3.384,6.8,285.0,57.0,477.6,42.6,0.0,0.478
+Lunes de museos,aleatorio,10,10,10,1.67,0.554,0.702,2.418,5.9,295.0,42.14,502.9,103.8,21.1,0.0
+Lunes de museos,orden_por_puntaje,1,1,1,2.476,,2.476,2.476,6.0,350.0,50.0,531.0,86.0,0.0,0.0
+Lunes de museos,greedy,1,1,1,2.673,,2.673,2.673,5.0,520.0,74.3,506.0,26.0,0.0,0.001
+Lunes de museos,genetico_sin_semilla,10,10,10,3.266,0.016,3.233,3.284,7.0,513.0,73.27,529.3,45.3,0.0,0.441
+Lunes de museos,genetico_con_semilla_greedy,10,10,10,3.25,0.023,3.223,3.284,7.0,398.0,56.86,506.1,38.6,0.0,0.442
+Pareja economica,aleatorio,10,10,10,1.221,0.512,0.493,2.088,6.5,141.0,46.98,562.3,161.3,0.0,0.0
+Pareja economica,orden_por_puntaje,1,1,1,1.24,,1.24,1.24,7.0,100.0,33.3,500.0,165.0,0.0,0.0
+Pareja economica,greedy,1,1,1,2.867,,2.867,2.867,8.0,220.0,73.3,501.0,80.0,26.0,0.001
+Pareja economica,genetico_sin_semilla,10,10,10,3.486,0.103,3.317,3.615,8.0,220.0,73.3,533.0,54.0,0.0,0.476
+Pareja economica,genetico_con_semilla_greedy,10,10,10,3.522,0.104,3.342,3.615,8.0,220.0,73.3,545.7,52.7,0.0,0.467
+Pareja romantica,aleatorio,10,10,10,1.323,0.304,0.683,1.778,6.1,259.0,32.39,468.4,137.6,52.8,0.0
+Pareja romantica,orden_por_puntaje,1,1,1,1.838,,1.838,1.838,6.0,350.0,43.8,464.0,97.0,77.0,0.0
+Pareja romantica,greedy,1,1,1,2.543,,2.543,2.543,6.0,350.0,43.8,371.0,34.0,47.0,0.001
+Pareja romantica,genetico_sin_semilla,10,10,10,3.497,0.033,3.462,3.542,8.0,650.0,81.2,497.5,42.5,0.0,0.418
+Pareja romantica,genetico_con_semilla_greedy,10,10,10,3.465,0.095,3.245,3.542,7.9,650.0,81.2,493.0,42.5,0.0,0.44
+Presupuesto minimo,aleatorio,10,10,10,1.368,0.291,1.017,1.859,6.1,0.0,0.0,498.1,107.6,18.0,0.0
+Presupuesto minimo,orden_por_puntaje,1,1,1,1.635,,1.635,1.635,6.0,0.0,0.0,489.0,104.0,0.0,0.0
+Presupuesto minimo,greedy,1,1,1,2.595,,2.595,2.595,7.0,0.0,0.0,503.0,73.0,0.0,0.001
+Presupuesto minimo,genetico_sin_semilla,10,10,10,3.117,0.081,2.971,3.236,8.0,0.0,0.0,525.2,51.3,0.4,0.452
+Presupuesto minimo,genetico_con_semilla_greedy,10,10,10,3.169,0.053,3.061,3.256,8.0,0.0,0.0,523.8,48.8,0.0,0.456
+Solo cultural,aleatorio,10,10,10,1.675,0.538,0.465,2.379,5.1,225.0,45.0,430.3,76.6,35.2,0.0
+Solo cultural,orden_por_puntaje,1,1,1,2.441,,2.441,2.441,5.0,90.0,18.0,446.0,61.0,0.0,0.0
+Solo cultural,greedy,1,1,1,3.242,,3.242,3.242,6.0,170.0,34.0,456.0,26.0,0.0,0.001
+Solo cultural,genetico_sin_semilla,10,10,10,3.536,0.067,3.362,3.588,7.0,177.0,35.4,465.1,36.6,0.0,0.472
+Solo cultural,genetico_con_semilla_greedy,10,10,10,3.573,0.011,3.558,3.588,7.0,180.0,36.0,461.3,31.3,0.0,0.447

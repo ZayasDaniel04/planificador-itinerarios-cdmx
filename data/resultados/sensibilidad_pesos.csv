@@ -1,0 +1,163 @@
+﻿perfil,variante,traslape_top10,spearman,costo_medio_top10,categorias_top10,pct_horario_real,traslape_dia,lugares_dia
+Pareja romantica,base,1.0,1.0,105.0,4,80.0,1.0,6
+Pareja romantica,similitud x0,0.333,0.603,30.0,4,100.0,0.25,9
+Pareja romantica,similitud x0.5,1.0,0.966,105.0,4,80.0,0.75,8
+Pareja romantica,similitud x1.5,1.0,0.994,105.0,4,80.0,0.857,7
+Pareja romantica,similitud x2,1.0,0.971,105.0,4,80.0,0.857,7
+Pareja romantica,reglas x0,0.818,0.966,117.0,4,90.0,0.75,8
+Pareja romantica,reglas x0.5,0.818,0.996,117.0,4,90.0,1.0,6
+Pareja romantica,reglas x1.5,1.0,0.996,105.0,4,80.0,0.75,8
+Pareja romantica,reglas x2,1.0,0.994,105.0,4,80.0,0.75,8
+Pareja romantica,confianza x0,0.538,0.977,105.0,4,70.0,0.3,7
+Pareja romantica,confianza x0.5,1.0,0.997,105.0,4,80.0,1.0,6
+Pareja romantica,confianza x1.5,0.818,0.996,117.0,4,90.0,1.0,6
+Pareja romantica,confianza x2,0.818,0.95,117.0,4,90.0,1.0,6
+Pareja romantica,precio x0,0.818,0.971,135.0,4,90.0,0.857,7
+Pareja romantica,precio x0.5,1.0,0.991,105.0,4,80.0,1.0,6
+Pareja romantica,precio x1.5,1.0,0.995,105.0,4,80.0,1.0,6
+Pareja romantica,precio x2,1.0,0.99,105.0,4,80.0,0.75,8
+Pareja romantica,esquema_original,0.667,0.948,105.0,4,80.0,0.556,8
+Familia con ninos,base,1.0,1.0,10.0,4,100.0,1.0,6
+Familia con ninos,similitud x0,0.538,0.561,0.0,4,100.0,0.222,5
+Familia con ninos,similitud x0.5,0.818,0.875,0.0,4,100.0,0.714,6
+Familia con ninos,similitud x1.5,0.667,0.979,30.0,4,100.0,0.714,6
+Familia con ninos,similitud x2,0.667,0.974,30.0,4,100.0,0.714,6
+Familia con ninos,reglas x0,0.667,0.963,30.0,4,100.0,0.714,6
+Familia con ninos,reglas x0.5,0.667,0.984,30.0,4,100.0,0.714,6
+Familia con ninos,reglas x1.5,1.0,0.997,10.0,4,100.0,1.0,6
+Familia con ninos,reglas x2,1.0,0.953,10.0,4,100.0,0.714,6
+Familia con ninos,confianza x0,0.429,0.95,10.0,4,100.0,0.5,6
+Familia con ninos,confianza x0.5,1.0,0.978,10.0,4,100.0,0.714,6
+Familia con ninos,confianza x1.5,0.667,0.993,30.0,4,100.0,0.714,6
+Familia con ninos,confianza x2,0.667,0.98,30.0,4,100.0,0.714,6
+Familia con ninos,precio x0,0.667,0.967,30.0,4,100.0,0.714,6
+Familia con ninos,precio x0.5,0.667,0.985,30.0,4,100.0,0.714,6
+Familia con ninos,precio x1.5,1.0,0.958,10.0,4,100.0,0.714,6
+Familia con ninos,precio x2,1.0,0.885,10.0,4,100.0,0.714,6
+Familia con ninos,esquema_original,0.333,0.974,30.0,4,70.0,0.714,6
+Amigos de fiesta,base,1.0,1.0,192.0,4,100.0,1.0,6
+Amigos de fiesta,similitud x0,0.538,0.94,191.0,4,100.0,0.5,6
+Amigos de fiesta,similitud x0.5,1.0,1.0,192.0,4,100.0,1.0,6
+Amigos de fiesta,similitud x1.5,1.0,1.0,192.0,4,100.0,1.0,6
+Amigos de fiesta,similitud x2,1.0,1.0,192.0,4,100.0,0.714,6
+Amigos de fiesta,reglas x0,1.0,0.955,192.0,4,100.0,0.571,5
+Amigos de fiesta,reglas x0.5,1.0,0.976,192.0,4,100.0,0.667,4
+Amigos de fiesta,reglas x1.5,1.0,0.994,192.0,4,100.0,1.0,6
+Amigos de fiesta,reglas x2,1.0,0.986,192.0,4,100.0,1.0,6
+Amigos de fiesta,confianza x0,0.333,0.911,192.0,4,100.0,0.333,6
+Amigos de fiesta,confianza x0.5,1.0,0.989,192.0,4,100.0,1.0,6
+Amigos de fiesta,confianza x1.5,1.0,0.992,192.0,4,100.0,1.0,6
+Amigos de fiesta,confianza x2,1.0,0.977,192.0,4,100.0,0.667,4
+Amigos de fiesta,precio x0,1.0,0.995,192.0,4,100.0,1.0,6
+Amigos de fiesta,precio x0.5,1.0,0.999,192.0,4,100.0,1.0,6
+Amigos de fiesta,precio x1.5,1.0,0.998,192.0,4,100.0,1.0,6
+Amigos de fiesta,precio x2,1.0,0.995,192.0,4,100.0,1.0,6
+Amigos de fiesta,esquema_original,0.429,0.918,192.0,4,100.0,0.182,7
+Solo cultural,base,1.0,1.0,27.0,4,100.0,1.0,6
+Solo cultural,similitud x0,0.538,0.633,30.0,4,100.0,0.3,7
+Solo cultural,similitud x0.5,0.818,0.983,18.0,4,100.0,0.5,6
+Solo cultural,similitud x1.5,1.0,0.999,27.0,4,100.0,0.5,6
+Solo cultural,similitud x2,1.0,0.999,27.0,4,100.0,0.714,6
+Solo cultural,reglas x0,0.818,0.973,27.0,4,100.0,0.714,6
+Solo cultural,reglas x0.5,1.0,0.99,27.0,4,100.0,0.333,6
+Solo cultural,reglas x1.5,0.818,0.996,18.0,4,100.0,0.5,6
+Solo cultural,reglas x2,0.818,0.994,18.0,4,100.0,0.5,6
+Solo cultural,confianza x0,0.667,0.979,27.0,4,90.0,0.333,6
+Solo cultural,confianza x0.5,1.0,0.994,27.0,4,100.0,0.333,6
+Solo cultural,confianza x1.5,1.0,0.979,27.0,4,100.0,1.0,6
+Solo cultural,confianza x2,1.0,0.965,27.0,4,100.0,1.0,6
+Solo cultural,precio x0,0.538,0.938,73.0,5,100.0,0.5,6
+Solo cultural,precio x0.5,1.0,0.981,27.0,4,100.0,0.333,6
+Solo cultural,precio x1.5,0.818,0.996,18.0,4,100.0,0.333,6
+Solo cultural,precio x2,0.818,0.993,18.0,4,100.0,0.333,6
+Solo cultural,esquema_original,0.818,0.957,27.0,4,100.0,0.333,6
+Pareja economica,base,1.0,1.0,30.0,4,100.0,1.0,8
+Pareja economica,similitud x0,0.429,0.64,30.0,4,100.0,0.308,9
+Pareja economica,similitud x0.5,1.0,0.973,30.0,4,100.0,0.417,9
+Pareja economica,similitud x1.5,1.0,0.992,30.0,4,100.0,0.333,8
+Pareja economica,similitud x2,0.667,0.986,10.0,4,100.0,0.333,8
+Pareja economica,reglas x0,0.667,0.966,10.0,4,100.0,0.25,7
+Pareja economica,reglas x0.5,0.667,0.981,10.0,4,100.0,0.231,8
+Pareja economica,reglas x1.5,1.0,0.976,30.0,4,100.0,1.0,8
+Pareja economica,reglas x2,1.0,0.947,30.0,4,100.0,0.778,8
+Pareja economica,confianza x0,0.333,0.972,30.0,4,100.0,0.333,8
+Pareja economica,confianza x0.5,1.0,0.992,30.0,4,100.0,1.0,8
+Pareja economica,confianza x1.5,1.0,0.971,30.0,4,100.0,1.0,8
+Pareja economica,confianza x2,1.0,0.965,30.0,4,100.0,1.0,8
+Pareja economica,precio x0,1.0,0.929,30.0,4,100.0,0.6,8
+Pareja economica,precio x0.5,1.0,0.969,30.0,4,100.0,1.0,8
+Pareja economica,precio x1.5,1.0,0.994,30.0,4,100.0,1.0,8
+Pareja economica,precio x2,0.667,0.988,10.0,4,100.0,1.0,8
+Pareja economica,esquema_original,0.25,0.899,30.0,4,70.0,0.333,8
+Amigos en el Centro,base,1.0,1.0,156.0,4,100.0,1.0,6
+Amigos en el Centro,similitud x0,0.25,0.827,141.0,6,100.0,0.182,7
+Amigos en el Centro,similitud x0.5,1.0,0.986,156.0,4,100.0,0.444,7
+Amigos en el Centro,similitud x1.5,1.0,1.0,156.0,4,100.0,0.714,6
+Amigos en el Centro,similitud x2,1.0,1.0,156.0,4,100.0,0.714,6
+Amigos en el Centro,reglas x0,1.0,0.984,156.0,4,100.0,0.714,6
+Amigos en el Centro,reglas x0.5,1.0,0.996,156.0,4,100.0,0.5,6
+Amigos en el Centro,reglas x1.5,1.0,0.971,156.0,4,100.0,1.0,6
+Amigos en el Centro,reglas x2,1.0,0.96,156.0,4,100.0,0.333,6
+Amigos en el Centro,confianza x0,0.818,0.955,156.0,4,90.0,0.444,7
+Amigos en el Centro,confianza x0.5,1.0,0.981,156.0,4,100.0,0.625,7
+Amigos en el Centro,confianza x1.5,1.0,0.996,156.0,4,100.0,0.5,6
+Amigos en el Centro,confianza x2,1.0,0.992,156.0,4,100.0,0.5,6
+Amigos en el Centro,precio x0,1.0,0.96,156.0,4,100.0,0.714,6
+Amigos en el Centro,precio x0.5,1.0,0.985,156.0,4,100.0,1.0,6
+Amigos en el Centro,precio x1.5,1.0,0.99,156.0,4,100.0,0.444,7
+Amigos en el Centro,precio x2,1.0,0.986,156.0,4,100.0,0.444,7
+Amigos en el Centro,esquema_original,0.818,0.947,156.0,4,90.0,0.5,6
+Adultos mayores,base,1.0,1.0,35.0,4,100.0,1.0,6
+Adultos mayores,similitud x0,0.176,0.287,0.0,4,100.0,0.0,6
+Adultos mayores,similitud x0.5,0.818,0.946,39.0,4,100.0,1.0,6
+Adultos mayores,similitud x1.5,1.0,0.999,35.0,4,100.0,0.091,6
+Adultos mayores,similitud x2,0.667,0.998,45.0,4,100.0,0.091,6
+Adultos mayores,reglas x0,1.0,0.982,35.0,4,100.0,0.091,6
+Adultos mayores,reglas x0.5,1.0,0.999,35.0,4,100.0,1.0,6
+Adultos mayores,reglas x1.5,0.818,0.997,39.0,4,100.0,1.0,6
+Adultos mayores,reglas x2,0.538,0.994,57.0,4,100.0,1.0,6
+Adultos mayores,confianza x0,0.538,0.986,35.0,4,100.0,1.0,6
+Adultos mayores,confianza x0.5,1.0,0.994,35.0,4,100.0,1.0,6
+Adultos mayores,confianza x1.5,1.0,0.938,35.0,4,100.0,0.091,6
+Adultos mayores,confianza x2,1.0,0.92,35.0,4,100.0,0.091,6
+Adultos mayores,precio x0,0.333,0.92,78.0,4,100.0,0.1,5
+Adultos mayores,precio x0.5,0.667,0.938,45.0,4,100.0,0.091,6
+Adultos mayores,precio x1.5,1.0,0.998,35.0,4,100.0,1.0,6
+Adultos mayores,precio x2,1.0,0.996,35.0,4,100.0,1.0,6
+Adultos mayores,esquema_original,0.667,0.916,35.0,4,100.0,0.091,6
+Presupuesto minimo,base,1.0,1.0,0.0,4,100.0,1.0,7
+Presupuesto minimo,similitud x0,0.667,0.959,0.0,4,100.0,0.556,7
+Presupuesto minimo,similitud x0.5,0.818,0.993,0.0,4,100.0,0.556,7
+Presupuesto minimo,similitud x1.5,1.0,0.998,0.0,4,100.0,1.0,7
+Presupuesto minimo,similitud x2,1.0,0.993,0.0,4,100.0,1.0,7
+Presupuesto minimo,reglas x0,0.818,0.981,0.0,4,100.0,1.0,7
+Presupuesto minimo,reglas x0.5,1.0,0.995,0.0,4,100.0,1.0,7
+Presupuesto minimo,reglas x1.5,0.818,0.999,0.0,4,100.0,1.0,7
+Presupuesto minimo,reglas x2,0.818,0.997,0.0,4,100.0,1.0,7
+Presupuesto minimo,confianza x0,0.429,0.983,0.0,4,100.0,0.4,7
+Presupuesto minimo,confianza x0.5,0.818,0.999,0.0,4,100.0,1.0,7
+Presupuesto minimo,confianza x1.5,1.0,0.998,0.0,4,100.0,1.0,7
+Presupuesto minimo,confianza x2,0.818,0.985,0.0,5,100.0,1.0,7
+Presupuesto minimo,precio x0,1.0,0.958,0.0,4,100.0,1.0,7
+Presupuesto minimo,precio x0.5,1.0,0.994,0.0,4,100.0,1.0,7
+Presupuesto minimo,precio x1.5,1.0,1.0,0.0,4,100.0,1.0,7
+Presupuesto minimo,precio x2,1.0,0.999,0.0,4,100.0,1.0,7
+Presupuesto minimo,esquema_original,0.538,0.953,0.0,4,70.0,0.273,7
+Lunes de museos,base,1.0,1.0,57.0,5,100.0,1.0,5
+Lunes de museos,similitud x0,0.25,0.293,30.0,4,100.0,0.182,8
+Lunes de museos,similitud x0.5,1.0,0.937,57.0,5,100.0,1.0,5
+Lunes de museos,similitud x1.5,1.0,0.988,57.0,5,100.0,0.667,5
+Lunes de museos,similitud x2,1.0,0.987,57.0,5,100.0,0.429,5
+Lunes de museos,reglas x0,1.0,0.893,57.0,5,100.0,0.667,5
+Lunes de museos,reglas x0.5,1.0,0.963,57.0,5,100.0,1.0,5
+Lunes de museos,reglas x1.5,1.0,0.999,57.0,5,100.0,0.429,5
+Lunes de museos,reglas x2,1.0,0.987,57.0,5,100.0,0.429,5
+Lunes de museos,confianza x0,1.0,0.937,57.0,5,100.0,0.667,5
+Lunes de museos,confianza x0.5,1.0,0.945,57.0,5,100.0,1.0,5
+Lunes de museos,confianza x1.5,1.0,0.978,57.0,5,100.0,0.667,5
+Lunes de museos,confianza x2,1.0,0.931,57.0,5,100.0,0.667,5
+Lunes de museos,precio x0,0.818,0.967,65.0,5,100.0,0.667,5
+Lunes de museos,precio x0.5,1.0,0.996,57.0,5,100.0,1.0,5
+Lunes de museos,precio x1.5,1.0,0.955,57.0,5,100.0,1.0,5
+Lunes de museos,precio x2,1.0,0.943,57.0,5,100.0,1.0,5
+Lunes de museos,esquema_original,1.0,0.943,57.0,5,100.0,0.429,5
