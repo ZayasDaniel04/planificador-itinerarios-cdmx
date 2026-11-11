@@ -2,7 +2,7 @@
 8,TACO A.C. – Talleres de Arte Contemporáneo,atraccion,Coyoacan,1,lejos_de_su_zona
 30,Zona Arqueológica de Cuicuilco,atraccion,San Angel,1,lejos_de_su_zona
 34,Micheladas Chabenos,bar,Centro Historico,1,lejos_de_su_zona
-43,Gin Gin Roma Norte,bar,Roma-Condesa,1,horario_osm_no_interpretable
+43,Gin Gin Roma Norte (bar),bar,Roma-Condesa,1,horario_osm_no_interpretable
 97,Galerías Coapa,centro_comercial,Coyoacan,1,lejos_de_su_zona
 117,Jardin Vegetal,jardin,Centro Historico,1,lejos_de_su_zona
 118,Jardin bahia,jardin,Centro Historico,1,lejos_de_su_zona
@@ -18,7 +18,6 @@
 150,Tianguis domingos,mercado,Roma-Condesa,1,horario_osm_no_interpretable
 151,Tianguis jueves,mercado,Roma-Condesa,1,horario_osm_no_interpretable
 154,Vida Natural,mirador,Centro Historico,1,lejos_de_su_zona
-158,シティオ,mirador,Polanco-Chapultepec,1,nombre_no_latino_revisar
 159,Bosque de Tlalpan,mirador,San Angel,1,lejos_de_su_zona
 200,Astrum,parque,Centro Historico,1,lejos_de_su_zona
 201,Bahia,parque,Centro Historico,1,lejos_de_su_zona
@@ -28,5 +27,7 @@
 212,Parqué Media Luna,parque,Coyoacan,1,lejos_de_su_zona
 239,Hamburbifería,restaurante,Coyoacan,1,lejos_de_su_zona
 246,LAS HIJAS DE LA TOSTADA,restaurante,Polanco-Chapultepec,1,horario_osm_no_interpretable
-282,Tagers,restaurante,San Angel,1,horario_osm_no_interpretable
+269,Ramen-ya Rokai (restaurante de comida japonesa),restaurante,Roma-Condesa,1,nombre_similar_con_id_270
+270,Rokai (restaurante de comida japonesa),restaurante,Roma-Condesa,1,nombre_similar_con_id_269
+282,Tagers (restaurante de brunch),restaurante,San Angel,1,horario_osm_no_interpretable
 297,Zoológico de San Juan de Aragón,zoologico,Centro Historico,1,fuera_de_caja_de_descarga|lejos_de_su_zona

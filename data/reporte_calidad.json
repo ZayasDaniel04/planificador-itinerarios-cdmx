@@ -1,45 +1,53 @@
 {
-  "total_registros": 299,
-  "usables": 299,
+  "total_registros": 297,
+  "usables": 297,
   "no_usables": 0,
-  "registros_con_alguna_bandera": 31,
+  "registros_con_alguna_bandera": 32,
   "banderas": {
     "lejos_de_su_zona": 24,
     "horario_osm_no_interpretable": 6,
-    "nombre_no_latino_revisar": 1,
+    "nombre_similar": 2,
     "fuera_de_caja_de_descarga": 1
   },
-  "duplicados": [],
+  "duplicados": [
+    {
+      "id_a": 269,
+      "id_b": 270,
+      "tipo": "nombre_similar",
+      "distancia_m": 8.5,
+      "similitud": 0.889
+    }
+  ],
   "coordenadas_invalidas": 0,
   "coordenadas_en_el_borde_de_la_caja": 1,
   "procedencia": {
     "horario": {
-      "osm": 237,
-      "estimado_categoria": 62
+      "osm": 236,
+      "estimado_categoria": 61
     },
     "costo": {
-      "estimado_categoria": 280,
-      "osm_fee_no": 19
+      "estimado_categoria": 279,
+      "osm_fee_no": 18
     },
     "duracion": {
-      "estimado_categoria": 299
+      "estimado_categoria": 297
     },
     "atributos_ninos_mayores_actividad_ambiente": {
-      "estimado_categoria": 299
+      "estimado_categoria": 297
     }
   },
-  "porcentaje_horario_real": 79.3,
+  "porcentaje_horario_real": 79.5,
   "campos_vacios": {
-    "horario_osm": 56,
-    "sitio_web": 104,
-    "tipo_comida": 205,
-    "costo_osm": 247,
+    "horario_osm": 55,
+    "sitio_web": 102,
+    "tipo_comida": 203,
+    "costo_osm": 246,
     "osm_id": 0
   },
   "por_zona": {
     "Roma-Condesa": 103,
     "Centro Historico": 69,
-    "Polanco-Chapultepec": 62,
+    "Polanco-Chapultepec": 60,
     "Coyoacan": 42,
     "San Angel": 23
   },
@@ -56,9 +64,9 @@
     "libreria": 10,
     "centro_comercial": 8,
     "galeria": 7,
-    "mirador": 7,
     "cine": 6,
-    "zoologico": 5
+    "mirador": 6,
+    "zoologico": 4
   },
   "crudo_osm": {
     "registros": 5288,

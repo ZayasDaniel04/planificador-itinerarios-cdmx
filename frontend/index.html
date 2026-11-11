@@ -38,6 +38,21 @@
   .hora { width: 92px; flex: none; font-weight: 600; font-size: 14px; color: #7a1f3d; }
   .info b { font-size: 15px; }
   .info small { display: block; color: #666; margin-top: 2px; }
+  #nota-ruta { margin: 4px 0 0; font-size: 13px; color: #7a1f3d; }
+
+  /* Nivel de caminata: tres botones; cada uno muestra un globo con los kilometros */
+  .caminata { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .nivel { position: relative; padding: 10px 4px; border: 2px solid #ddd; background: #fafafa; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: inherit; }
+  .nivel small { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 2px; }
+  .nivel.activo { border-color: #7a1f3d; background: #f6e6ec; font-weight: 600; }
+  .globo { display: none; position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); width: 230px; padding: 9px 11px; background: #333; color: #fff; border-radius: 8px; font-size: 12.5px; font-weight: 400; line-height: 1.4; text-align: left; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+  .globo::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border: 6px solid transparent; border-top-color: #333; }
+  .nivel[data-nivel="1"] .globo { left: 0; transform: none; }
+  .nivel[data-nivel="1"] .globo::after { left: 28px; }
+  .nivel[data-nivel="3"] .globo { left: auto; right: 0; transform: none; }
+  .nivel[data-nivel="3"] .globo::after { left: auto; right: 22px; margin-left: 0; }
+  .nivel:hover .globo, .nivel:focus .globo { display: block; }
+  #caminata-detalle { margin: 8px 0 0; font-size: 13px; color: #555; }
 </style>
 </head>
 <body>
@@ -72,11 +87,15 @@
     <input type="number" id="presupuesto" value="800" min="50" step="50">
 
     <h2>Nivel de caminata</h2>
-    <select id="actividad">
-      <option value="1">Poca</option>
-      <option value="2" selected>Normal</option>
-      <option value="3">Mucha</option>
-    </select>
+    <div class="caminata" id="caminata" role="radiogroup" aria-label="Nivel de caminata">
+      <button type="button" class="nivel" data-nivel="1" role="radio" aria-checked="false">Poco<small>hasta 3 km</small>
+        <span class="globo" role="tooltip"><b>Poco: hasta 3 km</b> caminando en total entre un lugar y otro (unos 35 min a pie). Pocos lugares y cercanos entre sí.</span></button>
+      <button type="button" class="nivel activo" data-nivel="2" role="radio" aria-checked="true">Medio<small>hasta 6 km</small>
+        <span class="globo" role="tooltip"><b>Medio: hasta 6 km</b> caminando en total (más o menos 1 h 10 min a pie). Un ritmo tranquilo que alcanza para pasar a un barrio vecino.</span></button>
+      <button type="button" class="nivel" data-nivel="3" role="radio" aria-checked="false">Mucho<small>hasta 10 km</small>
+        <span class="globo" role="tooltip"><b>Mucho: hasta 10 km</b> caminando en total (unas 2 h a pie). Para quienes disfrutan caminar y quieren recorrer más de un barrio.</span></button>
+    </div>
+    <p id="caminata-detalle">Kilómetros aproximados por las calles, contando solo lo que caminas entre un lugar y otro.</p>
 
     <h2>Zona</h2>
     <select id="zona">
@@ -114,6 +133,7 @@
     <div class="caja">
       <div id="mapa"></div>
       <div id="estado">Llena el formulario y presiona "Generar itinerario".</div>
+      <div id="nota-ruta"></div>
       <div class="resumen" id="resumen"></div>
     </div>
     <ol id="lista"></ol>
@@ -123,7 +143,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   const API = "http://127.0.0.1:8000";
+  // Servicio de rutas PEATONALES de OpenStreetMap (FOSSGIS): traza el recorrido a pie por las calles
+  const RUTA_A_PIE = "https://routing.openstreetmap.de/routed-foot/route/v1/foot/";
   let grupo = "pareja";
+  let nivel = 2;          // nivel de caminata: 1 poco (3 km), 2 medio (6 km), 3 mucho (10 km)
+  let busquedaActual = 0; // para ignorar rutas que llegan tarde de una busqueda anterior
 
   const mapa = L.map("mapa").setView([19.4326, -99.1332], 12);
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
@@ -146,6 +170,53 @@
     });
   });
 
+  document.querySelectorAll(".nivel").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".nivel").forEach(function (x) {
+        x.classList.remove("activo");
+        x.setAttribute("aria-checked", "false");
+      });
+      b.classList.add("activo");
+      b.setAttribute("aria-checked", "true");
+      nivel = parseInt(b.dataset.nivel);
+    });
+  });
+
+  function formatoMin(min) {
+    min = Math.round(min);
+    if (min < 60) return min + " min";
+    const h = Math.floor(min / 60), m = min % 60;
+    return h + " h" + (m ? " " + m + " min" : "");
+  }
+
+  // Dibuja la ruta a pie por las calles. Primero queda una linea recta punteada (aproximada) y,
+  // si el servicio responde, se reemplaza por el recorrido real caminando.
+  async function trazarRutaAPie(puntos, miBusqueda, lineaAproximada) {
+    const nota = document.getElementById("nota-ruta");
+    const coords = puntos.map(function (p) { return p[1] + "," + p[0]; }).join(";");
+    const control = new AbortController();
+    const limite = setTimeout(function () { control.abort(); }, 9000);
+    try {
+      const resp = await fetch(RUTA_A_PIE + coords + "?overview=full&geometries=geojson&steps=false",
+                               { signal: control.signal });
+      const j = await resp.json();
+      if (miBusqueda !== busquedaActual) return;           // ya hay otra busqueda
+      if (j.code !== "Ok" || !j.routes || !j.routes.length) throw new Error(j.code || "sin ruta");
+      const ruta = j.routes[0];
+      capa.removeLayer(lineaAproximada);
+      L.polyline(ruta.geometry.coordinates.map(function (c) { return [c[1], c[0]]; }),
+                 { color: "#7a1f3d", weight: 5, opacity: 0.85 }).addTo(capa);
+      nota.textContent = "Ruta a pie por las calles: " + (ruta.distance / 1000).toFixed(1) +
+                         " km, unos " + formatoMin(ruta.duration / 60) + " caminando.";
+    } catch (e) {
+      if (miBusqueda === busquedaActual) {
+        nota.textContent = "No se pudo cargar el trazado por las calles: la línea punteada es una ruta aproximada en línea recta.";
+      }
+    } finally {
+      clearTimeout(limite);
+    }
+  }
+
   function leerPerfil() {
     const intereses = {};
     document.querySelectorAll(".intereses input:checked").forEach(function (c) {
@@ -157,7 +228,7 @@
       hay_ninos: document.getElementById("ninos").checked,
       hay_adultos_mayores: document.getElementById("mayores").checked,
       presupuesto_por_persona: parseFloat(document.getElementById("presupuesto").value) || 500,
-      nivel_actividad: parseInt(document.getElementById("actividad").value),
+      nivel_actividad: nivel,
       zona: document.getElementById("zona").value,
       dia_semana: document.getElementById("dia").value,
       hora_inicio: document.getElementById("inicio").value || "10:00",
@@ -180,7 +251,8 @@
     document.getElementById("resumen").innerHTML =
       dato("lugares", r.lugares) +
       dato("gasto por persona", "$" + Math.round(r.gasto_por_persona)) +
-      dato("en traslados", r.traslado_total_min + " min") +
+      dato("caminando (aprox.)", (r.km_caminados != null ? r.km_caminados : "?") + " km") +
+      dato("a pie entre lugares", r.traslado_total_min + " min") +
       dato("incluye comida", r.incluye_comida ? "Sí" : "No");
 
     const puntos = [];
@@ -195,7 +267,10 @@
       puntos.push([p.lat, p.lon]);
 
       let extra = "";
-      if (p.traslado_min > 0) extra += "Traslado desde el anterior: ~" + p.traslado_min + " min";
+      if (p.traslado_min > 0) {
+        extra += "A pie desde el anterior: ~" + p.traslado_min + " min";
+        if (p.traslado_km != null) extra += " (" + p.traslado_km + " km)";
+      }
       if (p.espera_min > 0) extra += (extra ? " - " : "") + "espera " + p.espera_min + " min";
 
       const li = document.createElement("li");
@@ -213,7 +288,9 @@
     });
 
     if (puntos.length > 1) {
-      L.polyline(puntos, { color: "#7a1f3d", weight: 3, opacity: 0.8, dashArray: "6 8" }).addTo(capa);
+      const aproximada = L.polyline(puntos, { color: "#7a1f3d", weight: 3, opacity: 0.8, dashArray: "6 8" }).addTo(capa);
+      document.getElementById("nota-ruta").textContent = "Buscando la ruta a pie por las calles...";
+      trazarRutaAPie(puntos, busquedaActual, aproximada);
     }
     mapa.invalidateSize();
     mapa.fitBounds(puntos, { padding: [30, 30], maxZoom: 14 });
@@ -223,6 +300,8 @@
     const estado = document.getElementById("estado");
     document.getElementById("lista").innerHTML = "";
     document.getElementById("resumen").innerHTML = "";
+    document.getElementById("nota-ruta").textContent = "";
+    busquedaActual++;
     capa.clearLayers();
 
     const perfil = leerPerfil();
