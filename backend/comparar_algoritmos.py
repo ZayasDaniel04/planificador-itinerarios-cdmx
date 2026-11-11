@@ -3,7 +3,10 @@
 Metodologia:
   * Mismos perfiles, MISMOS candidatos (un solo pool por perfil), mismas restricciones
     (restricciones.revisar_parada) y misma funcion fitness para todos los algoritmos.
-  * El voraz es determinista: se corre una vez por perfil.
+  * Los traslados son A PIE y hay un limite de km por nivel de caminata (restricciones.py).
+  * El voraz es determinista: se corre una vez por perfil, en dos versiones: `greedy_simple`
+    (una sola corrida, la primera parada decide en que parte de la ciudad se queda el dia) y
+    `greedy` (con reinicios: prueba cada candidato como primera parada y se queda con el mejor).
   * El genetico es aleatorio: se corre con varias semillas (--semillas, por defecto 10) y en
     dos variantes:
         genetico_con_semilla_greedy  el voraz entra a la poblacion inicial (no puede quedar peor)
@@ -37,10 +40,10 @@ from app.itinerario import construir_desde_candidatos, construir_pool, resumen
 from app.fitness import fitness
 from app.perfiles_prueba import perfiles_prueba
 from app.recomendador import cargar_lugares, RUTA_DATOS
-from app.restricciones import validar_itinerario
+from app.restricciones import limite_km, validar_itinerario
 
 SALIDA = Path(__file__).resolve().parents[1] / "data" / "resultados"
-ORDEN_ALGORITMOS = ["aleatorio", "orden_por_puntaje", "greedy",
+ORDEN_ALGORITMOS = ["aleatorio", "orden_por_puntaje", "greedy_simple", "greedy",
                     "genetico_sin_semilla", "genetico_con_semilla_greedy"]
 
 
@@ -61,6 +64,8 @@ def registrar(filas, perfil_nombre, perfil, df, algoritmo, semilla, ruta, segund
         "duracion_total_min": r["duracion_total_min"],
         "tiempo_en_lugares_min": r["tiempo_en_lugares_min"],
         "traslado_total_min": r["traslado_total_min"],
+        "km_caminados": r["km_caminados"],
+        "limite_km": limite_km(perfil),
         "espera_total_min": r["espera_total_min"],
         "segundos": round(segundos, 4),
     })
@@ -76,6 +81,9 @@ def correr(df, semillas, generaciones, poblacion):
         candidatos = preparar(pool, perfil)          # MISMOS candidatos para todos
         n = len(candidatos)
 
+        t0 = time.perf_counter()
+        ruta_s = construir_desde_candidatos(candidatos, perfil, reinicios=False)
+        registrar(filas, nombre, perfil, df, "greedy_simple", None, ruta_s, time.perf_counter() - t0)
         t0 = time.perf_counter()
         ruta_g = construir_desde_candidatos(candidatos, perfil)
         registrar(filas, nombre, perfil, df, "greedy", None, ruta_g, time.perf_counter() - t0)
@@ -119,6 +127,7 @@ def resumir(detalle):
               presupuesto_usado_pct_media=("presupuesto_usado_pct", "mean"),
               duracion_total_media=("duracion_total_min", "mean"),
               traslado_media=("traslado_total_min", "mean"),
+              km_media=("km_caminados", "mean"),
               espera_media=("espera_total_min", "mean"),
               segundos_media=("segundos", "mean")).reset_index()
     r["algoritmo"] = pd.Categorical(r["algoritmo"], ORDEN_ALGORITMOS, ordered=True)
@@ -133,7 +142,8 @@ def conclusiones(resumen_df, detalle):
                      "Wilcoxon sobre las medias por perfil (p < 0.05)."),
            "por_perfil": {}, "global": {}}
     pares = [("genetico_sin_semilla", "greedy"), ("genetico_con_semilla_greedy", "greedy"),
-             ("genetico_sin_semilla", "aleatorio"), ("greedy", "aleatorio")]
+             ("genetico_sin_semilla", "aleatorio"), ("greedy", "aleatorio"),
+             ("greedy", "greedy_simple")]
     piv = resumen_df.set_index(["perfil", "algoritmo"])
     for a, b in pares:
         veredictos, medias_a, medias_b = {}, [], []
@@ -176,14 +186,16 @@ def conclusiones(resumen_df, detalle):
 
 def imprimir(resumen_df, concl, detalle):
     print(f"\n{'Perfil':22} {'Algoritmo':28} {'Val':>4} {'Fitness (media ± desv)':>23} "
-          f"{'Lug':>5} {'Gasto%':>7} {'Dur':>5} {'Tras':>5} {'Esp':>5} {'Seg':>6}")
+          f"{'Lug':>5} {'Gasto%':>7} {'Dur':>5} {'Tras':>5} {'Km':>5} {'Esp':>5} {'Seg':>6}")
     for _, r in resumen_df.iterrows():
         f = f"{r.fitness_media:6.2f} ± {0 if np.isnan(r.fitness_desv) else r.fitness_desv:4.2f}"
         print(f"{r.perfil:22} {r.algoritmo:28} {int(r.validas):>2}/{int(r.corridas):<2} {f:>23} "
               f"{r.lugares_media:5.1f} {r.presupuesto_usado_pct_media:7.1f} {r.duracion_total_media:5.0f} "
-              f"{r.traslado_media:5.0f} {r.espera_media:5.0f} {r.segundos_media:6.3f}")
+              f"{r.traslado_media:5.0f} {r.km_media:5.1f} {r.espera_media:5.0f} {r.segundos_media:6.3f}")
     print("\n=== Validez ===")
     total = len(detalle)
+    exc = int((detalle.km_caminados > detalle.limite_km + 1e-6).sum())
+    print(f"Itinerarios que pasan su limite de km de caminata: {exc}/{total}")
     print(f"Itinerarios con solucion: {int(detalle.con_solucion.sum())}/{total}; "
           f"validos segun la validacion independiente: {int(detalle.valido.sum())}/{int(detalle.con_solucion.sum())}")
     print("\n=== Conclusiones (regla: " + concl["regla"] + ") ===")

@@ -5,8 +5,10 @@ import pytest
 
 from app.itinerario import generar_itinerario
 from app.perfiles import Perfil
-from app.restricciones import (EstadoDia, ESPERA_MAX, agregar_parada, normalizar_nombre,
-                               revisar_parada, traslado_min, validar_itinerario)
+from app.restricciones import (EstadoDia, ESPERA_MAX, FACTOR_RODEO, MAX_KM_CAMINATA, MIN_TRASLADO,
+                               VELOCIDAD_KMH, agregar_parada, distancia_km, limite_km,
+                               normalizar_nombre, revisar_parada, traslado_km, traslado_min,
+                               validar_itinerario)
 
 CENTRO = (19.4326, -99.1332)
 
@@ -113,13 +115,59 @@ def test_el_gasto_acumulado_cuenta(perfil):
 
 def test_el_traslado_se_suma_y_tiene_minimo(perfil):
     a = cand(1, lat=19.4326, lon=-99.1332)
-    b = cand(2, "Lejos", lat=19.3500, lon=-99.1620)       # Coyoacan, ~10 km
-    assert traslado_min(a, a) == 5
-    assert traslado_min(a, b) > 25
+    b = cand(2, "Cerca", lat=19.4450, lon=-99.1332)       # ~1.4 km al norte
+    assert traslado_min(a, a) == MIN_TRASLADO == 5
+    assert traslado_min(a, b) > 15
     e = EstadoDia(perfil)
     agregar_parada(e, a, revisar_parada(e, a, perfil)[0])
     datos, _ = revisar_parada(e, b, perfil)
     assert datos[2] == traslado_min(a, b) and datos[0] == e.reloj + datos[2]
+
+
+def test_los_traslados_son_caminando_y_no_en_vehiculo():
+    """Antes se calculaban a 18 km/h (vehiculo). Ahora son a pie: 5 km/h por calles."""
+    assert VELOCIDAD_KMH <= 6 and FACTOR_RODEO >= 1.0
+    a, b = cand(1, lat=19.4326, lon=-99.1332), cand(2, "Otro", lat=19.4326, lon=-99.1332 + 0.018)  # ~1.9 km
+    recto = distancia_km(a["lat"], a["lon"], b["lat"], b["lon"])
+    assert traslado_km(a, b) == pytest.approx(recto * FACTOR_RODEO)             # las calles rodean manzanas
+    assert traslado_min(a, b) == round(traslado_km(a, b) / VELOCIDAD_KMH * 60)
+    assert 20 <= traslado_min(a, b) <= 40                                       # ~2 km a pie, no ~7 min en vehiculo
+
+
+def test_limite_de_kilometros_por_nivel_de_caminata():
+    assert MAX_KM_CAMINATA == {1: 3.0, 2: 6.0, 3: 10.0}
+    for nivel, km in MAX_KM_CAMINATA.items():
+        assert limite_km(Perfil(nivel_actividad=nivel)) == km
+
+
+def test_rechaza_si_se_pasa_del_limite_de_caminata():
+    cerca = cand(1, "A")
+    lejos = cand(2, "B", lat=CENTRO[0] + 0.030)           # ~3.3 km en linea recta, ~4.3 km por calles
+    for nivel, esperado in ((1, "excede_caminata"), (2, "ok"), (3, "ok")):
+        p = Perfil(tipo_grupo="amigos", presupuesto_por_persona=500, hora_inicio="09:00",
+                   hora_fin="23:00", nivel_actividad=nivel)
+        e = EstadoDia(p)
+        agregar_parada(e, cerca, revisar_parada(e, cerca, p)[0])
+        assert motivo(e, lejos, p) == esperado, nivel
+
+
+def test_el_limite_cuenta_los_kilometros_acumulados():
+    p = Perfil(tipo_grupo="amigos", presupuesto_por_persona=500, hora_inicio="09:00", hora_fin="23:00",
+               nivel_actividad=1)                         # 3 km
+    e = EstadoDia(p)
+    lugares = [cand(i, f"L{i}", ("museo", "parque", "galeria", "mirador")[i % 4],
+                    lat=CENTRO[0] + 0.007 * i) for i in range(5)]     # saltos de ~0.8 km a pie
+    metidos = 0
+    for c in lugares:
+        d, m = revisar_parada(e, c, p)
+        if d is None:
+            assert m == "excede_caminata"
+            break
+        agregar_parada(e, c, d)
+        metidos += 1
+    assert 2 <= metidos < 5 and e.km <= 3.0
+    assert e.ruta[-1]["traslado_km"] > 0 and e.ruta[0]["traslado_km"] == 0
+    assert sum(x["traslado_km"] for x in e.ruta) == pytest.approx(e.km, abs=0.05)
 
 
 # ---------------------------------------------------------------- validar_itinerario
@@ -186,3 +234,37 @@ def test_detecta_filtros_del_perfil(lugares):
              "salida": "22:30", "duracion_min": int(bar["duracion_min"]), "traslado_min": 0,
              "espera_min": 0, "costo_estimado": float(bar["costo_estimado"]), "puntaje": 1.0}]
     assert any("filtros del perfil" in x for x in validar_itinerario(ruta, p, lugares))
+
+
+def _par_lejano(lugares, km_min, km_max):
+    """Primer par de lugares (no comida) cuya caminata esta entre km_min y km_max."""
+    for _, a in lugares[lugares["categoria"] == "parque"].iterrows():
+        for _, b in lugares[lugares["categoria"] == "museo"].iterrows():
+            if km_min < traslado_km(a, b) < km_max:
+                return a, b
+    raise AssertionError("no hay un par de lugares a esa distancia")
+
+
+def _ruta_de_dos(a, b):
+    ruta, reloj, anterior = [], 9 * 60, None
+    for i, l in enumerate((a, b), 1):
+        tras = traslado_min(anterior, l) if anterior is not None else 0
+        ini = reloj + tras
+        fin = ini + int(l["duracion_min"])
+        ruta.append({"orden": i, "id": int(l["id"]), "nombre": l["nombre"], "categoria": l["categoria"],
+                     "zona": l["zona"], "lat": l["lat"], "lon": l["lon"],
+                     "llegada": f"{ini // 60:02d}:{ini % 60:02d}", "salida": f"{fin // 60:02d}:{fin % 60:02d}",
+                     "duracion_min": int(l["duracion_min"]), "traslado_min": int(tras), "espera_min": 0,
+                     "costo_estimado": float(l["costo_estimado"]), "puntaje": 1.0})
+        reloj, anterior = fin, l
+    return ruta
+
+
+def test_detecta_que_se_camina_mas_del_limite(lugares):
+    a, b = _par_lejano(lugares, 3.2, 9.0)                       # mas de 3 km, menos de 10
+    ruta = _ruta_de_dos(a, b)
+    base = dict(tipo_grupo="amigos", presupuesto_por_persona=900, hora_inicio="08:00", hora_fin="23:59",
+                dia_semana="sabado")
+    poco = validar_itinerario(ruta, Perfil(**base, nivel_actividad=1), lugares)
+    assert any("se caminan" in x and "limite de 3 km" in x for x in poco), poco
+    assert not any("se caminan" in x for x in validar_itinerario(ruta, Perfil(**base, nivel_actividad=3), lugares))

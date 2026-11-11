@@ -8,7 +8,7 @@ from app.genetico import generar_itinerario_genetico
 from app.itinerario import generar_itinerario, construir_pool, resumen
 from app.perfiles import Perfil
 from app.recomendador import cargar_lugares, recomendar
-from app.restricciones import validar_itinerario
+from app.restricciones import limite_km, validar_itinerario
 
 app = FastAPI(title="Planificador de itinerarios CDMX")
 app.add_middleware(CORSMiddleware, allow_origins=["*"],
@@ -89,6 +89,6 @@ def api_itinerario(p: PerfilItinerario):
                    "Ningun lugar cumple los filtros del perfil (zona, ninos, adultos mayores, "
                    "nivel de actividad, presupuesto o dia).")
         it["resumen"] = resumen([])
-    it.update({"algoritmo": algoritmo, "valido": not violaciones,
-               "violaciones": violaciones, "mensaje": mensaje})
+    it.update({"algoritmo": algoritmo, "valido": not violaciones, "violaciones": violaciones,
+               "mensaje": mensaje, "limite_km_caminata": limite_km(perfil)})
     return it

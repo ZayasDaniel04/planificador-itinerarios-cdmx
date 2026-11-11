@@ -7,8 +7,15 @@ algoritmo genetico, asi que ambos cumplen exactamente las mismas reglas.
 Estrategia voraz: en cada paso se elige, entre los lugares que SI se pueden agregar, el de mayor
 `valor` inmediato (aporte al fitness de ese lugar). Nunca se reconsidera una decision ya tomada,
 por eso puede quedar en un optimo local.
+
+Como los traslados son a pie y hay un limite de kilometros, la primera parada decide en que
+parte de la ciudad se queda todo el dia: si el lugar mejor puntuado esta aislado, el voraz simple
+arma un dia de 2 o 3 paradas. Por eso, por defecto el voraz corre con REINICIOS MULTIPLES: prueba
+cada candidato como primera parada, sigue voraz desde ahi, y se queda con el dia de mayor
+fitness. Sigue siendo determinista. `reinicios=False` da el voraz simple (de una sola corrida).
 """
-from app.fitness import PESO_TRASLADO, PESO_ESPERA, PENA_REPETICION, BONO_COMIDA, es_nocturno
+from app.fitness import (PESO_TRASLADO, PESO_ESPERA, PENA_REPETICION, BONO_COMIDA, FITNESS_INVALIDO,
+                         es_nocturno, fitness)
 from app.horarios import a_min, a_hhmm                                  # noqa: F401 (re-export)
 from app.recomendador import recomendar
 from app.restricciones import (                                         # noqa: F401 (re-export)
@@ -26,8 +33,9 @@ def construir_pool(df, perfil, pesos=None):
     return recomendar(df, perfil, n=POOL_N, max_por_categoria=POOL_MAX_POR_CATEGORIA, pesos=pesos)
 
 
-def construir_desde_candidatos(candidatos, perfil):
-    """Arma el dia eligiendo, en cada paso, el mejor lugar que cumpla las restricciones."""
+def _voraz(candidatos, perfil, primero=None):
+    """Una corrida voraz. Si `primero` es un indice, esa es la primera parada obligada (si no
+    cabe, devuelve un dia vacio)."""
     estado = EstadoDia(perfil)
     # si el grupo quiere vida nocturna, se reserva presupuesto para un bar (heuristica del
     # voraz: no es una restriccion, solo evita gastar todo antes de llegar a la noche)
@@ -39,7 +47,9 @@ def construir_desde_candidatos(candidatos, perfil):
         mejor = None
         for espera_max in (ESPERA_PREFERIDA, ESPERA_MAX):
             mejor_val = -1e9
-            for c in candidatos:
+            for i, c in enumerate(candidatos):
+                if primero is not None and not estado.ruta and i != primero:
+                    continue
                 datos, _ = revisar_parada(estado, c, perfil, espera_max)
                 if datos is None:
                     continue
@@ -66,9 +76,25 @@ def construir_desde_candidatos(candidatos, perfil):
     return estado.ruta
 
 
-def construir(pool, perfil, usar_horarios_osm=True):
+def construir_desde_candidatos(candidatos, perfil, reinicios=True):
+    """Arma el dia con el voraz. Con reinicios=True (por defecto) prueba cada candidato como
+    primera parada y devuelve el dia de mayor fitness; con False, una sola corrida."""
+    if not reinicios:
+        return _voraz(candidatos, perfil)
+    mejor, mejor_f = [], FITNESS_INVALIDO
+    for i in range(len(candidatos)):
+        ruta = _voraz(candidatos, perfil, primero=i)
+        if ruta:
+            f = fitness(ruta, perfil)
+            if f > mejor_f + 1e-12:
+                mejor, mejor_f = ruta, f
+    return mejor
+
+
+def construir(pool, perfil, usar_horarios_osm=True, reinicios=True):
     """Version que recibe el pool (DataFrame de recomendar)."""
-    return construir_desde_candidatos(preparar_candidatos(pool, perfil, usar_horarios_osm), perfil)
+    return construir_desde_candidatos(preparar_candidatos(pool, perfil, usar_horarios_osm),
+                                      perfil, reinicios)
 
 
 def resumen(ruta):
@@ -76,6 +102,7 @@ def resumen(ruta):
         "lugares": len(ruta),
         "gasto_por_persona": round(sum(p["costo_estimado"] for p in ruta), 2),
         "traslado_total_min": sum(p["traslado_min"] for p in ruta),
+        "km_caminados": round(sum(p.get("traslado_km", 0.0) for p in ruta), 1),
         "espera_total_min": sum(p["espera_min"] for p in ruta),
         "puntaje_total": round(sum(p["puntaje"] for p in ruta), 3),
         "incluye_comida": any(p["categoria"] in COMIDA_FUERTE for p in ruta),

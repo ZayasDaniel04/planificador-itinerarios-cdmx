@@ -14,9 +14,11 @@ Restricciones DURAS (un itinerario que las incumpla es invalido):
      OSM si existe; si no, estimacion por categoria).
   3. La ultima salida no pasa de la hora de fin del usuario.
   4. El gasto acumulado por persona no pasa del presupuesto.
-  5. Cada visita dura exactamente duracion_min; el traslado se calcula con Haversine a
-     VELOCIDAD_KMH (minimo MIN_TRASLADO); no se llega antes de terminar el lugar anterior
-     mas el traslado.
+  5. Cada visita dura exactamente duracion_min; los traslados son CAMINANDO: distancia
+     Haversine por FACTOR_RODEO (las calles no son linea recta) a VELOCIDAD_KMH (minimo
+     MIN_TRASLADO); no se llega antes de terminar el lugar anterior mas el traslado.
+  5b. Los kilometros caminados en el dia no pasan del limite del nivel de caminata del
+     usuario (MAX_KM_CAMINATA: poco 3 km, medio 6 km, mucho 10 km).
   6. La espera antes de una visita no pasa de ESPERA_MAX minutos.
   7. Maximo por categoria (MAX_POR_CATEGORIA / MAX_DEFAULT).
   8. Una sola comida fuerte (restaurante o mercado), que empiece dentro de VENTANA_COMIDA.
@@ -31,8 +33,12 @@ from functools import lru_cache
 from app.horarios import a_min, a_hhmm, ventanas_lugar
 from app.reglas import pasa_filtros
 
-VELOCIDAD_KMH = 18          # velocidad promedio en la ciudad
+VELOCIDAD_KMH = 5           # velocidad caminando, en km/h
+FACTOR_RODEO = 1.3          # las calles rodean manzanas: km caminados = km en linea recta x 1.3
 MIN_TRASLADO = 5            # minimo por traslado, en minutos
+# Kilometros maximos que se caminan en total entre lugares, segun el nivel de caminata del
+# usuario (1 = poco, 2 = medio, 3 = mucho). Es una restriccion real, no solo una etiqueta.
+MAX_KM_CAMINATA = {1: 3.0, 2: 6.0, 3: 10.0}
 VENTANA_COMIDA = (12 * 60 + 30, 16 * 60)
 COMIDA_FUERTE = ("restaurante", "mercado")
 MAX_POR_CATEGORIA = {"cafeteria": 1, "libreria": 1, "cine": 1}
@@ -53,14 +59,25 @@ def distancia_km(lat1, lon1, lat2, lon2):
 
 
 @lru_cache(maxsize=500_000)
-def _traslado_coords(lat1, lon1, lat2, lon2):
-    km = distancia_km(lat1, lon1, lat2, lon2)
-    return max(MIN_TRASLADO, round(km / VELOCIDAD_KMH * 60))
+def _tramo_coords(lat1, lon1, lat2, lon2):
+    """(km caminados, minutos) entre dos puntos, a pie por calles (estimado)."""
+    km = distancia_km(lat1, lon1, lat2, lon2) * FACTOR_RODEO
+    return km, max(MIN_TRASLADO, round(km / VELOCIDAD_KMH * 60))
+
+
+def traslado_km(a, b):
+    """Kilometros que se caminan de un lugar al otro (estimado por calles)."""
+    return _tramo_coords(float(a["lat"]), float(a["lon"]), float(b["lat"]), float(b["lon"]))[0]
 
 
 def traslado_min(a, b):
-    """Minutos de traslado entre dos lugares (con cache: el genetico repite mucho los pares)."""
-    return _traslado_coords(float(a["lat"]), float(a["lon"]), float(b["lat"]), float(b["lon"]))
+    """Minutos caminando entre dos lugares (con cache: el genetico repite mucho los pares)."""
+    return _tramo_coords(float(a["lat"]), float(a["lon"]), float(b["lat"]), float(b["lon"]))[1]
+
+
+def limite_km(perfil):
+    """Kilometros maximos de caminata del dia para el nivel de caminata del perfil."""
+    return MAX_KM_CAMINATA.get(perfil.nivel_actividad, MAX_KM_CAMINATA[2])
 
 
 def normalizar_nombre(nombre):
@@ -107,6 +124,8 @@ class EstadoDia:
         self.fin_dia = a_min(perfil.hora_fin)
         self.reloj = a_min(perfil.hora_inicio)
         self.presupuesto = perfil.presupuesto_por_persona
+        self.max_km = limite_km(perfil)
+        self.km = 0.0
         self.gasto = 0.0
         self.actual = None
         self.por_cat = {}
@@ -132,7 +151,11 @@ def revisar_parada(estado, c, perfil, espera_max=ESPERA_MAX):
     if fuerte and estado.comio:
         return None, "segunda_comida_fuerte"
 
-    tras = traslado_min(estado.actual, c) if estado.actual is not None else 0
+    tras, km = 0, 0.0
+    if estado.actual is not None:
+        km, tras = _tramo_coords(estado.actual["lat"], estado.actual["lon"], c["lat"], c["lon"])
+        if estado.km + km > estado.max_km + _EPS:
+            return None, "excede_caminata"
     llegada = estado.reloj + tras
     cota = max(llegada, VENTANA_COMIDA[0]) if fuerte else llegada
     inicio = None
@@ -159,6 +182,8 @@ def revisar_parada(estado, c, perfil, espera_max=ESPERA_MAX):
 def agregar_parada(estado, c, datos):
     """Registra la parada y avanza el estado del dia."""
     inicio, fin_visita, tras, espera = datos
+    km = (_tramo_coords(estado.actual["lat"], estado.actual["lon"], c["lat"], c["lon"])[0]
+          if estado.actual is not None else 0.0)
     estado.ruta.append({
         "orden": len(estado.ruta) + 1,
         "id": c["id"],
@@ -171,6 +196,7 @@ def agregar_parada(estado, c, datos):
         "salida": a_hhmm(fin_visita),
         "duracion_min": c["duracion"],
         "traslado_min": int(tras),
+        "traslado_km": round(km, 2),
         "espera_min": int(espera),
         "costo_estimado": c["costo"],
         "puntaje": round(c["puntaje"], 3),
@@ -178,6 +204,7 @@ def agregar_parada(estado, c, datos):
         "costo_fuente": c["costo_fuente"],
     })
     estado.reloj = fin_visita
+    estado.km += km
     estado.gasto += c["costo"]
     estado.actual = c
     estado.ids.add(c["id"])
@@ -203,7 +230,7 @@ def validar_itinerario(ruta, perfil, df=None):
         filas = {int(r["id"]): r for _, r in df.iterrows()}
 
     ids, nombres, por_cat = set(), set(), {}
-    gasto, fuertes = 0.0, 0
+    gasto, fuertes, km_total = 0.0, 0, 0.0
     reloj, anterior = inicio_dia, None
     for i, p in enumerate(ruta, 1):
         etiqueta = f'parada {i} ("{p["nombre"]}")'
@@ -221,6 +248,8 @@ def validar_itinerario(ruta, perfil, df=None):
             problemas.append(f"{etiqueta}: la visita dura {salida - llegada} min y deberia durar "
                              f"{p['duracion_min']}")
         tras = traslado_min(anterior, p) if anterior is not None else 0
+        if anterior is not None:
+            km_total += traslado_km(anterior, p)
         if llegada < reloj + tras:
             problemas.append(f"{etiqueta}: llega a las {p['llegada']} pero el traslado desde la "
                              f"parada anterior no alcanza ({tras} min)")
@@ -263,6 +292,9 @@ def validar_itinerario(ruta, perfil, df=None):
     if gasto > perfil.presupuesto_por_persona + _EPS:
         problemas.append(f"gasto ${gasto:.0f} por persona excede el presupuesto "
                          f"${perfil.presupuesto_por_persona:.0f}")
+    if km_total > limite_km(perfil) + _EPS:
+        problemas.append(f"se caminan {km_total:.1f} km, mas del limite de {limite_km(perfil):.0f} km "
+                         f"del nivel de caminata {perfil.nivel_actividad}")
     if fuertes > 1:
         problemas.append("hay mas de una comida fuerte")
     return problemas

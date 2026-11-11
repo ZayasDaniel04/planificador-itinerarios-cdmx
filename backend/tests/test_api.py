@@ -117,3 +117,12 @@ def test_lunes_no_incluye_lugares_cerrados(client, lugares):
     assert r["valido"] and r["paradas"]
     por_id = lugares.set_index("id")
     assert all(ventanas_lugar(por_id.loc[p["id"]], "lunes")[0] for p in r["paradas"])
+
+
+@pytest.mark.parametrize("nivel, limite", [(1, 3), (2, 6), (3, 10)])
+def test_nivel_de_caminata_pone_el_limite_de_km(client, nivel, limite):
+    r = client.post("/itinerario", json={**PERFIL, "nivel_actividad": nivel}).json()
+    assert r["valido"] is True and r["limite_km_caminata"] == limite
+    assert r["resumen"]["km_caminados"] <= limite
+    assert all("traslado_km" in p for p in r["paradas"])
+    assert sum(p["traslado_km"] for p in r["paradas"]) == pytest.approx(r["resumen"]["km_caminados"], abs=0.06)

@@ -7,7 +7,7 @@ from app.itinerario import (construir_desde_candidatos, construir_pool, generar_
                             resumen)
 from app.horarios import a_min
 from app.perfiles_prueba import perfil_sin_solucion, perfiles_prueba
-from app.restricciones import validar_itinerario
+from app.restricciones import limite_km, validar_itinerario
 
 GEN, POB = 30, 30          # corridas cortas para que las pruebas sean rapidas
 NOMBRES = list(perfiles_prueba())
@@ -204,3 +204,46 @@ def test_grupo_nocturno_recibe_bono_si_hay_bar(corridas):
     assert fitness(con_bar, p) - fitness(sin_bar, p) == pytest.approx(0.4)
     de_dia = corridas["Solo cultural"]["perfil"]
     assert fitness(con_bar, de_dia) == pytest.approx(fitness(sin_bar, de_dia))
+
+
+# ---------------------------------------------------------------- caminata (a pie, con limite de km)
+@pytest.mark.parametrize("nombre", NOMBRES)
+def test_nunca_se_camina_mas_que_el_limite_del_nivel(corridas, nombre):
+    c = corridas[nombre]
+    for ruta in (c["greedy"], c["ga_semilla"], c["ga_libre"]):
+        km = sum(p["traslado_km"] for p in ruta)
+        assert km <= limite_km(c["perfil"]) + 1e-6, f"{nombre}: {km:.2f} km"
+        assert ruta[0]["traslado_km"] == 0 and all(p["traslado_km"] >= 0 for p in ruta)
+        assert resumen(ruta)["km_caminados"] == pytest.approx(km, abs=0.06)
+
+
+def test_el_nivel_de_caminata_cambia_cuanto_se_camina(lugares, perfiles):
+    """Con 'mucho' se recorren mas kilometros que el limite de 'poco': el limite no es decorativo."""
+    from app.perfiles import Perfil
+    maximos = {}
+    for nivel in (1, 2, 3):
+        km_max = 0.0
+        for p in perfiles.values():
+            q = Perfil(**{**p.__dict__, "nivel_actividad": nivel, "zona": ""})
+            ruta = generar_itinerario(lugares, q)["paradas"]
+            km = sum(x["traslado_km"] for x in ruta)
+            assert km <= limite_km(q) + 1e-6
+            km_max = max(km_max, km)
+        maximos[nivel] = km_max
+    assert maximos[1] <= 3.0 and maximos[3] > 3.0 and maximos[3] <= 10.0
+    assert maximos[1] <= maximos[2] <= maximos[3] + 1e-9
+
+
+@pytest.mark.parametrize("nombre", NOMBRES)
+def test_voraz_con_reinicios_nunca_es_peor_que_el_voraz_simple(corridas, nombre):
+    c = corridas[nombre]
+    simple = construir_desde_candidatos(c["cands"], c["perfil"], reinicios=False)
+    assert fitness(c["greedy"], c["perfil"]) >= fitness(simple, c["perfil"]) - 1e-9
+    assert validar_itinerario(simple, c["perfil"]) == []
+
+
+def test_voraz_simple_puede_quedarse_corto_y_los_reinicios_lo_arreglan(corridas):
+    """El primer lugar elegido decide en que parte de la ciudad se queda el dia a pie."""
+    c = corridas["Familia con ninos"]
+    simple = construir_desde_candidatos(c["cands"], c["perfil"], reinicios=False)
+    assert len(c["greedy"]) > len(simple)

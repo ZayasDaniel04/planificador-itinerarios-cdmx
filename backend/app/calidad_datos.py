@@ -15,6 +15,7 @@ from difflib import SequenceMatcher
 import pandas as pd
 
 from app.horarios import parsear_horario_osm
+from app.nombres import parece_otro_idioma
 from app.restricciones import distancia_km, normalizar_nombre
 
 # Caja de coordenadas usada en la descarga (sur, oeste, norte, este)
@@ -282,6 +283,8 @@ def analizar(df, raw=None):
         # otras sospechas
         if tiene_nombre_no_latino(f["nombre"]):
             banderas[i].append("nombre_no_latino_revisar")
+        elif parece_otro_idioma(f["nombre"]) and "(" not in str(f["nombre"]):
+            banderas[i].append("nombre_otro_idioma_sin_aclarar")
         d = distancia_a_su_zona_km(f["lat"], f["lon"], f["zona"])
         if f["zona"] not in ZONAS:
             banderas[i].append("zona_desconocida")
