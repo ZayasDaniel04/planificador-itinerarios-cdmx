@@ -142,7 +142,11 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const API = "http://127.0.0.1:8000";
+  const API_LOCAL = "http://127.0.0.1:8000";
+  const API_NUBE = "https://planificador-itinerarios-cdmx.onrender.com";
+  // En tu computadora (archivo o localhost) usa la API local; ya publicada, la de internet
+  const API = (location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname))
+    ? API_LOCAL : API_NUBE;
   // Servicio de rutas PEATONALES de OpenStreetMap (FOSSGIS): traza el recorrido a pie por las calles
   const RUTA_A_PIE = "https://routing.openstreetmap.de/routed-foot/route/v1/foot/";
   let grupo = "pareja";
@@ -310,6 +314,9 @@
       return;
     }
     estado.textContent = "Armando tu día...";
+    const aviso = setTimeout(function () {
+      estado.textContent = "Armando tu día... (si el servidor gratuito estaba dormido, puede tardar hasta un minuto)";
+    }, 6000);
     try {
       const resp = await fetch(API + "/itinerario", {
         method: "POST",
@@ -324,7 +331,9 @@
       }
       mostrar(datos);
     } catch (e) {
-      estado.textContent = "No se pudo conectar con la API. ¿Está encendido uvicorn? (" + e.message + ")";
+      estado.textContent = "No se pudo conectar con la API. Si es la versión publicada, espera un minuto y vuelve a intentar. (" + e.message + ")";
+    } finally {
+      clearTimeout(aviso);
     }
   }
 
